@@ -1,0 +1,17 @@
+IA:
+élagage alpha beta
+algo minimax sur 4 niveaux
+fonction evaluation qui donne poids certaine position (alignement 3 pions avec une case vide extrémité)
+adversaire va jouer coups qui nous arrange le moins
+noeud dans arbre, on va prendre toujours la + mauvaise reponse (celle qui nous arrange le moins)
+minimmum noueds de niveau n+2 pour déterminer poids des noeuds n+1
+choix celle qui minimise
+choisir celle qui maximise la fonction d'évaluation
+à chaque fois que poins niveau, on peut donner poids au niveau supérieur
+on va éviter de tout calculer
+élagage alpha : de toute façon pour le noeud de droite au minimum vaut 1
+(les autres poids ne sont pas utiles)
+coupure alĥa wiki : 
+puisque v au maximum 4 (car prend 4 minimum)
+il ne sert à rien d'évaluer puisque 5 > max du V
+on évite donc le parcours en profondeur
