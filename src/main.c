@@ -1,4 +1,4 @@
-#include "modeConsole.h"
+#include "console.h"
 #include "puissance_quatre.h"
 #include <stdio.h>
 #include <stdlib.h>
