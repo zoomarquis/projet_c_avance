@@ -1,10 +1,11 @@
-#include "init.c"
+#include "mode_console.h"
 #include "puissance_quatre.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_buffer(){    
-  while (getchar() != '\n');
+void clear_buffer() {
+  while (getchar() != '\n')
+    ;
 }
 
 void choix_interface(char *interface) {
@@ -89,7 +90,9 @@ Puissance4 *initGame() {
     for (int j = 0; j < NB_COLONNE; j++) {
       game->plateau[i][j] = VIDE;
     }
-  }
+  } // init plateau
+  game->fin = false;
+  game->nb_jetons = 0;
   return game;
 }
 
@@ -109,11 +112,11 @@ int main() {
   Puissance4 *game = initGame();
   userInterface *ui;
   if (interface == 'c') {
-    ui = init_console();
+    ui = makeConsole();
     if (mode == 'h') {
-      game->j1 = initHumainConsole(J1, game);
-      game->j2 = initHumainConsole(J2, game);
-    } else if (mode == 'a') {
+      game->j1 = makeHumainConsole(J1, game);
+      game->j2 = makeHumainConsole(J2, game);
+    } /*else if (mode == 'a') {
       game->j1 = initHumainConsole(J1, game);
       game->j2 = initIAConsole(J2, game);
     } else if (mode == 'i') {
@@ -121,16 +124,19 @@ int main() {
       game->j2 = initHumainConsole(J2, game);
     } else if (mode == 's') {
       // wtf
-    } else {
+    } */
+    else {
       perror("Erreur inopinée !");
       exit(EXIT_FAILURE);
     }
-    game->courant = game->j2;
+    game->courant = game->j2; // switch au début de partie sur j1
   } else if (interface == 'g') {
     // play(init_mode_console());
   } else {
     perror("Erreur inopinée !");
     exit(EXIT_FAILURE);
   }
+  playGame(game, *ui);
+
   return EXIT_SUCCESS;
 }

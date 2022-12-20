@@ -12,9 +12,10 @@ static bool testAlignement(Plateau plateau, unsigned ligne, unsigned colonne,
   assert(deplaC == 1 || deplaC == -1 || deplaC == 0);
   Type valeur = plateau[ligne][colonne];
   assert(valeur == J1 || valeur == J2);
-  unsigned nb_aligne = 1, l = ligne, c = colonne;
-  while (l >= 0 && l < NB_LIGNE && c >= 0 && c < NB_COLONNE &&
-         plateau[l + deplaL][c + deplaC]) {
+  unsigned nb_aligne = 1;
+  int l = ligne, c = colonne;
+  while (l + deplaL >= 0 && l + deplaL < NB_LIGNE && c + deplaC >= 0 &&
+         c + deplaC < NB_COLONNE && plateau[l + deplaL][c + deplaC] == valeur) {
     l += deplaL;
     c += deplaC;
     nb_aligne++;
@@ -23,8 +24,8 @@ static bool testAlignement(Plateau plateau, unsigned ligne, unsigned colonne,
     return true;
   l = ligne;
   c = colonne;
-  while (l >= 0 && l < NB_LIGNE && c >= 0 && c < NB_COLONNE &&
-         plateau[l - deplaL][c - deplaC]) {
+  while (l - deplaL >= 0 && l - deplaL < NB_LIGNE && c - deplaC >= 0 &&
+         c - deplaC < NB_COLONNE && plateau[l - deplaL][c - deplaC] == valeur) {
     l -= deplaL;
     c -= deplaC;
     nb_aligne++;
@@ -74,14 +75,13 @@ void playGame(Puissance4 *game, userInterface ui) {
       exit(EXIT_FAILURE);
     }
     ui.affichage(ui.data, game);
-    ui.get_prochain_coup(ui.data, game, &colonne, &ligne);
+    ui.getProchainCoup(ui.data, game, &colonne, &ligne);
     ajoutJeton(game, ligne, colonne);
-  } while (!testFinPartie(game, ligne, colonne));
-  ui.affichage_fin_partie(ui.data, game);
+  } while (!(game->fin = testFinPartie(game, ligne, colonne)));
+  ui.affichage(ui.data, game);
 }
 
 // endgame retourne VIDE si pas fini, sinon retourne le gagnant
 // commande pour tout arreter ?
-// affichage fin partie
 // affichage
 // get prochain coup
