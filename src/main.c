@@ -3,17 +3,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void clear_buffer(){    
+  while (getchar() != '\n');
+}
+
 void choix_interface(char *interface) {
   printf("Choisissez l'interface de jeu. Entrez :\n"
          "'g' pour jouer en mode interface graphique\n"
          "'c' pour jouer en mode console\n"
          "Votre choix : ");
-  scanf("%hhd", interface);
+  scanf("%c", interface);
+  clear_buffer();
   while (*interface != 'g' && *interface != 'c') {
-    while ((*interface = getchar()) != EOF && *interface != '\n')
-      ; // vider buffer
     printf("Entrée incorrecte. Veuillez réessayer : ");
-    scanf("%hhd", interface);
+    scanf("%c", interface);
+    clear_buffer();
   }
 }
 
@@ -24,12 +28,12 @@ void choix_mode(char *mode) {
          "'i' pour qu'une intelligence artificielle joue contre vous\n"
          "'s' pour être spectateur d'une partie entre deux intelligences "
          "artificielles\nVotre choix : ");
-  scanf("%hhd", mode);
+  scanf("%c", mode);
+  clear_buffer();
   while (*mode != 'h' && *mode != 'a' && *mode != 'i' && *mode != 's') {
-    while ((*mode = getchar()) != EOF && *mode != '\n')
-      ; // vider buffer
     printf("Entrée incorrecte. Veuillez recommencer : ");
-    scanf("%hhd", mode);
+    scanf("%c", mode);
+    clear_buffer();
   }
 }
 
@@ -38,12 +42,12 @@ void choix_niveau(char *niveau) {
          "'1' pour le mode facile\n"
          "'2' pour le mode moyen\n"
          "'3' pour le mode difficile\nVotre choix : ");
-  scanf("%hhd", niveau);
+  scanf("%c", niveau);
+  clear_buffer();
   while (*niveau != '1' && *niveau != '2' && *niveau != '3') {
-    while ((*niveau = getchar()) != EOF && *niveau != '\n')
-      ; // vider buffer
     printf("Entrée incorrecte. Veuillez recommencer : ");
-    scanf("%hhd", niveau);
+    scanf("%c", niveau);
+    clear_buffer();
   }
 }
 
@@ -53,12 +57,12 @@ void choix_niveaux(char *niveau1, char *niveau2) {
          "'1' pour le mode facile\n"
          "'2' pour le mode moyen\n"
          "'3' pour le mode difficile\nVotre choix : ");
-  scanf("%hhd", niveau1);
+  scanf("%c", niveau1);
+  clear_buffer();
   while (*niveau1 != '1' && *niveau1 != '2' && *niveau1 != '3') {
-    while ((*niveau1 = getchar()) != EOF && *niveau1 != '\n')
-      ; // vider buffer
     printf("Entrée incorrecte. Veuillez recommencer : ");
-    scanf("%hhd", niveau1);
+    scanf("%c", niveau1);
+    clear_buffer();
   }
 
   printf("Choisissez le niveau de la seconde intelligence artificielle. "
@@ -66,12 +70,12 @@ void choix_niveaux(char *niveau1, char *niveau2) {
          "'1' pour le mode facile\n"
          "'2' pour le mode moyen\n"
          "'3' pour le mode difficile\nVotre choix : ");
-  scanf("%hhd", niveau2);
+  scanf("%c", niveau2);
+  clear_buffer();
   while (*niveau2 != '1' && *niveau2 != '2' && *niveau2 != '3') {
-    while ((*niveau2 = getchar()) != EOF && *niveau2 != '\n')
-      ; // vider buffer
     printf("Entrée incorrecte. Veuillez recommencer : ");
-    scanf("%hhd", niveau1);
+    scanf("%c", niveau1);
+    clear_buffer();
   }
 }
 
