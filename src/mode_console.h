@@ -1,6 +1,8 @@
 #ifndef MODE_CONSOLE_H
 #define MODE_CONSOLE_H
 
-userInterface * makeConsole();
+#include "puissance_quatre.h"
 
+userInterface *makeConsole();
+int jouerHumainConsole(Puissance4);
 #endif
