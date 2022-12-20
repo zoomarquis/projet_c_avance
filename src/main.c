@@ -1,4 +1,4 @@
-#include "mode_console.h"
+#include "modeConsole.h"
 #include "puissance_quatre.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,11 +96,17 @@ Puissance4 *initGame() {
   return game;
 }
 
+void cleanGame(Puissance4 *game, userInterface *ui) {
+  free(game->j1);
+  free(game->j2);
+  free(ui);
+  free(game);
+}
+
 int main() {
   char interface, mode, niveau, niveau2;
   printf("PUISSANCE QUATRE\n");
 
-  // choix user :
   choix_interface(&interface);
   choix_mode(&mode);
   if (mode == 'i' || mode == 'a') {
@@ -109,8 +115,9 @@ int main() {
     choix_niveaux(&niveau, &niveau2);
   }
 
-  Puissance4 *game = initGame();
   userInterface *ui;
+  Puissance4 *game = initGame();
+
   if (interface == 'c') {
     ui = makeConsole();
     if (mode == 'h') {
@@ -137,6 +144,8 @@ int main() {
     exit(EXIT_FAILURE);
   }
   playGame(game, *ui);
+
+  cleanGame(game, ui);
 
   return EXIT_SUCCESS;
 }
