@@ -11,7 +11,7 @@ static void printLigneIntermediaire() {
   printf("\n");
 }
 
-static void printCase(Case v) {
+static void printCase(Type v) {
   switch (v) {
   case VIDE:
     printf("   |");
@@ -25,7 +25,7 @@ static void printCase(Case v) {
   }
 }
 
-void printPlateau(Plateau plateau) {
+static void printPlateau(void *data, Puissance4 *game) {
   unsigned c, l;
   for (c = 0; c < NB_COLONNE; c++)
     printf("  %u ", c + 1);
@@ -34,23 +34,42 @@ void printPlateau(Plateau plateau) {
   for (l = 0; l < NB_LIGNE; l++) {
     printf("|");
     for (c = 0; c < NB_COLONNE; c++)
-      printCase(plateau[l][c]);
+      printCase(game->plateau[l][c]);
     printf("  %u ", l + 1);
     printLigneIntermediaire();
   }
 }
 
-unsigned(Plateau p, Case joueur) {
+static int jouerHumainConsole(Puissance4 game) {
   int coup;
-  assert(joueur == J1 || joueur == J2);
-  (joueur == J1) ? (printf("Joueur 1 : ")) : (printf("Joueur 2 : "));
-  scanf("%hhd", &coup);
-  while (coup < 0 || coup >= NB_COLONNE) {
-    while ((coup = getchar()) != EOF && coup != '\n')
-      ; // vider buffer
+  assert(game.courant);
+  (game.courant->c == J1) ? (printf("Joueur 1 : ")) : (printf("Joueur 2 : "));
+  scanf("%d", &coup);
+  // que faire si pas ok ?
+  // vider buffer
+  return coup;
+}
+
+void prochain_coup(void *data, Puissance4 *game, unsigned *colonne,
+                   unsigned *ligne) {
+  assert(game->courant);
+  int coup = game->courant->jouer(NULL, *game);
+  while (coup < 0 || coup >= NB_COLONNE ||
+         testColonneDisponible(game->plateau, coup) != -1) {
     printf("Veuillez entrer un numéro de colonne valide, entre %d et %d.\n", 1,
            NB_COLONNE);
-    scanf("%hhd", &coup);
-  };
-  return coup;
+    coup = game->courant->jouer(NULL, *game);
+  }
+}
+
+userInterface *makeConsole() {
+  userInterface *ui = malloc(sizeof(userInterface));
+  if (!ui) {
+    perror("Problème d'allocation.");
+    exit(EXIT_FAILURE);
+  }
+  ui->affichage = printPlateau;
+  // ui->affichage_fin_partie = printFinPartie;
+  // ui->get_prochain_coup =
+  return ui;
 }
