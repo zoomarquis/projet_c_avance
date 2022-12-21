@@ -17,7 +17,7 @@ static void affichage_nomme_le_comme_tu_veux(void *data, Puissance4 *game) {
 }*/
 }
 
-static unsigned jouerHumainGraphique(void *data, Puissance4 game) {
+static unsigned playHumainGraphique(void *data, Puissance4 game) {
   //
   return 0;
 }
@@ -27,15 +27,14 @@ static unsigned jouerHumainGraphique(void *data, Puissance4 game) {
 static void prochainCoup(void *data, Puissance4 *game, unsigned *colonne,
                          unsigned *ligne) {
   assert(game->courant);
-  unsigned coup = game->courant->jouer(
+  unsigned coup = game->courant->play(
       NULL, *game); // NULL en fonction de l'IA... modif + tard
-  while (testColonneDisponible(game->plateau, coup - 1) == -1) {
+  while (testColonne(game->plateau, coup - 1) == -1) {
     printf("Cette colonne est pleine, veuillez en choisir une autre.");
-    coup = game->courant->jouer(NULL, *game);
+    coup = game->courant->play(NULL, *game);
   } // à gérer dans le jouer pour la version graphique
   *colonne = coup - 1;
-  *ligne =
-      testColonneDisponible(game->plateau, coup - 1); // -1 en version console
+  *ligne = testColonne(game->plateau, coup - 1); // -1 en version console
   // modifer les valeurs de ligne et colonne (pour fc ajout jeton)
   assert(*ligne != -1);
 }
@@ -58,6 +57,6 @@ Joueur *makeHumainGraphiquee(Type c, Puissance4 *game) {
     exit(EXIT_FAILURE);
   }
   j->c = c;
-  j->jouer = &jouerHumainGraphique;
+  j->play = &playHumainGraphique;
   return j;
 }

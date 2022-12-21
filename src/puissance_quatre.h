@@ -1,36 +1,72 @@
+/**
+ * @file puissance_quatre.h
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Définition des types et fonctions de base du jeu puissance quatre.
+ * @version 0.1
+ * @date 2022-12-20
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef PUISSANCE_QUATRE_H
 #define PUISSANCE_QUATRE_H
 
 #include <stdbool.h>
 
+/**
+ * @def NB_LIGNE
+ * @brief nombre de ligne dans le plateau
+ */
+/**
+ * @def NB_COLONNE
+ * @brief nombre de colonne dans le plateau
+*/
 #define NB_LIGNE 6
 #define NB_COLONNE 7
 
+/**
+ * @enum Type
+ * @brief Représente les cases du plateau
+ * @typedef Type
+ */
 typedef enum
 {
-    VIDE,
-    J1,
-    J2
+    VIDE, //!< Représente une case vide
+    J1, //!< Représente une case qui est occupée par J1
+    J2 //!< Représente une case qui est occupée par J2
 } Type;
 
+/**
+ * \typedef Plateau
+ * @brief Un tableau à 2 dimensions de Type
+ */
 typedef Type Plateau[NB_LIGNE][NB_COLONNE];
 
+/**
+ * @typedef Joueur
+ * @brief Renommer joueur_
+ */
 typedef struct joueur_ Joueur;
 
+/**
+ * @brief 
+ * 
+ */
 typedef struct {
-    // joueur courant, si = VIDE : fin partie : perdu
     Joueur * j1;
     Joueur * j2;
-    Joueur * courant;
-    bool fin;
+    Joueur * courant; // courant à vide => perdu
     Plateau plateau;
+    bool fin;
     unsigned nb_jetons;
 } Puissance4;
 
 struct joueur_{
     void * data; // arbre decision pour ia
     Type c;
-    unsigned (*jouer)(void * data, Puissance4 game);
+    unsigned (*play)(void * data, Puissance4 game);
 };
 
 typedef struct {
@@ -39,7 +75,7 @@ typedef struct {
     void (*getProchainCoup)(void *data, Puissance4 * game, unsigned *colonne, unsigned *ligne);
 } userInterface;
 
-int testColonneDisponible(Plateau plateau, unsigned c);
-void playGame(Puissance4 *game, userInterface ui);
+int testColonne(Plateau plateau, unsigned c);
+void launchGame(Puissance4 *game, userInterface ui);
 
 #endif

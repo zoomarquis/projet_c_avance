@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static bool testAlignement(Plateau plateau, unsigned ligne, unsigned colonne,
-                           int deplaL, int deplaC) {
+static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
+                      int deplaL, int deplaC) {
   assert(ligne >= 0 && ligne < NB_LIGNE);
   assert(colonne >= 0 && colonne < NB_COLONNE);
   assert(deplaL == 1 || deplaL == -1 || deplaL == 0);
@@ -33,20 +33,28 @@ static bool testAlignement(Plateau plateau, unsigned ligne, unsigned colonne,
   return (nb_aligne >= 4);
 }
 
-static bool testFinPartie(Puissance4 *game, unsigned l, unsigned c) {
+static bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
   if (game->nb_jetons == (NB_COLONNE * NB_LIGNE)) {
     game->courant = NULL;
     return true;
   }
-  if (testAlignement(game->plateau, l, c, 0, 1)      // horizontal
-      || testAlignement(game->plateau, l, c, 1, 0)   // vertical
-      || testAlignement(game->plateau, l, c, 1, 1)   // diagonal
-      || testAlignement(game->plateau, l, c, 1, -1)) // diagonal /
+  if (testAlign(game->plateau, l, c, 0, 1)      // horizontal
+      || testAlign(game->plateau, l, c, 1, 0)   // vertical
+      || testAlign(game->plateau, l, c, 1, 1)   // diagonal
+      || testAlign(game->plateau, l, c, 1, -1)) // diagonal /
     return true;
   return false;
 }
 
-int testColonneDisponible(Plateau plateau, unsigned c) {
+static void addJeton(Puissance4 *game, unsigned ligne, unsigned colonne) {
+  assert(game->courant != NULL);
+  assert(ligne >= 0 && ligne < NB_LIGNE);
+  assert(colonne >= 0 && colonne < NB_COLONNE);
+  game->plateau[ligne][colonne] = game->courant->c;
+  game->nb_jetons++;
+}
+
+int testColonne(Plateau plateau, unsigned c) {
   assert(c >= 0 && c < NB_COLONNE);
   for (int i = NB_LIGNE - 1; i >= 0; i--) {
     if (plateau[i][c] == VIDE)
@@ -55,15 +63,7 @@ int testColonneDisponible(Plateau plateau, unsigned c) {
   return -1;
 }
 
-static void ajoutJeton(Puissance4 *game, unsigned ligne, unsigned colonne) {
-  assert(game->courant != NULL);
-  assert(ligne >= 0 && ligne < NB_LIGNE);
-  assert(colonne >= 0 && colonne < NB_COLONNE);
-  game->plateau[ligne][colonne] = game->courant->c;
-  game->nb_jetons++;
-}
-
-void playGame(Puissance4 *game, userInterface ui) {
+void launchGame(Puissance4 *game, userInterface ui) {
   unsigned colonne, ligne;
   do {
     if (game->courant == game->j2)
@@ -76,12 +76,7 @@ void playGame(Puissance4 *game, userInterface ui) {
     }
     ui.affichage(ui.data, game);
     ui.getProchainCoup(ui.data, game, &colonne, &ligne);
-    ajoutJeton(game, ligne, colonne);
-  } while (!(game->fin = testFinPartie(game, ligne, colonne)));
+    addJeton(game, ligne, colonne);
+  } while (!(game->fin = testEnd(game, ligne, colonne)));
   ui.affichage(ui.data, game);
 }
-
-// endgame retourne VIDE si pas fini, sinon retourne le gagnant
-// commande pour tout arreter ?
-// affichage
-// get prochain coup

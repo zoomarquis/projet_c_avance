@@ -1,9 +1,20 @@
+/**
+ * @file main.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Le fichier main du jeu puissance quatre.
+ * @version 0.1
+ * @date 2022-12-20
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
 #include "console.h"
 #include "puissance_quatre.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_buffer() {
+void clearBuffer() {
   while (getchar() != '\n')
     ;
 }
@@ -14,11 +25,11 @@ void choix_interface(char *interface) {
          "'c' pour jouer en mode console\n"
          "Votre choix : ");
   scanf("%c", interface);
-  clear_buffer();
+  clearBuffer();
   while (*interface != 'g' && *interface != 'c') {
     printf("Entrée incorrecte. Veuillez réessayer : ");
     scanf("%c", interface);
-    clear_buffer();
+    clearBuffer();
   }
 }
 
@@ -30,11 +41,11 @@ void choix_mode(char *mode) {
          "'s' pour être spectateur d'une partie entre deux intelligences "
          "artificielles\nVotre choix : ");
   scanf("%c", mode);
-  clear_buffer();
+  clearBuffer();
   while (*mode != 'h' && *mode != 'a' && *mode != 'i' && *mode != 's') {
     printf("Entrée incorrecte. Veuillez recommencer : ");
     scanf("%c", mode);
-    clear_buffer();
+    clearBuffer();
   }
 }
 
@@ -44,11 +55,11 @@ void choix_niveau(char *niveau) {
          "'2' pour le mode moyen\n"
          "'3' pour le mode difficile\nVotre choix : ");
   scanf("%c", niveau);
-  clear_buffer();
+  clearBuffer();
   while (*niveau != '1' && *niveau != '2' && *niveau != '3') {
     printf("Entrée incorrecte. Veuillez recommencer : ");
     scanf("%c", niveau);
-    clear_buffer();
+    clearBuffer();
   }
 }
 
@@ -59,11 +70,11 @@ void choix_niveaux(char *niveau1, char *niveau2) {
          "'2' pour le mode moyen\n"
          "'3' pour le mode difficile\nVotre choix : ");
   scanf("%c", niveau1);
-  clear_buffer();
+  clearBuffer();
   while (*niveau1 != '1' && *niveau1 != '2' && *niveau1 != '3') {
     printf("Entrée incorrecte. Veuillez recommencer : ");
     scanf("%c", niveau1);
-    clear_buffer();
+    clearBuffer();
   }
 
   printf("Choisissez le niveau de la seconde intelligence artificielle. "
@@ -72,11 +83,11 @@ void choix_niveaux(char *niveau1, char *niveau2) {
          "'2' pour le mode moyen\n"
          "'3' pour le mode difficile\nVotre choix : ");
   scanf("%c", niveau2);
-  clear_buffer();
+  clearBuffer();
   while (*niveau2 != '1' && *niveau2 != '2' && *niveau2 != '3') {
     printf("Entrée incorrecte. Veuillez recommencer : ");
     scanf("%c", niveau1);
-    clear_buffer();
+    clearBuffer();
   }
 }
 
@@ -143,7 +154,7 @@ int main() {
     perror("Erreur inopinée !");
     exit(EXIT_FAILURE);
   }
-  playGame(game, *ui);
+  launchGame(game, *ui);
 
   cleanGame(game, ui);
 

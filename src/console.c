@@ -52,7 +52,7 @@ static void printPlateau(void *data, Puissance4 *game) {
   }
 }
 
-static unsigned jouerHumainConsole(void *data, Puissance4 game) {
+static unsigned playHumainConsole(void *data, Puissance4 game) {
   int coup;
   assert(game.courant);
   (game.courant->c == J1) ? (printf("Joueur 1 : ")) : (printf("Joueur 2 : "));
@@ -71,13 +71,13 @@ static unsigned jouerHumainConsole(void *data, Puissance4 game) {
 static void prochainCoup(void *data, Puissance4 *game, unsigned *colonne,
                          unsigned *ligne) {
   assert(game->courant);
-  unsigned coup = game->courant->jouer(NULL, *game);
-  while (testColonneDisponible(game->plateau, coup - 1) == -1) {
+  unsigned coup = game->courant->play(NULL, *game);
+  while (testColonne(game->plateau, coup - 1) == -1) {
     printf("Cette colonne est pleine, veuillez en choisir une autre.");
-    coup = game->courant->jouer(NULL, *game);
+    coup = game->courant->play(NULL, *game);
   }
   *colonne = coup - 1;
-  *ligne = testColonneDisponible(game->plateau, coup - 1);
+  *ligne = testColonne(game->plateau, coup - 1);
   assert(*ligne != -1);
 }
 
@@ -99,6 +99,6 @@ Joueur *makeHumainConsole(Type c, Puissance4 *game) {
     exit(EXIT_FAILURE);
   }
   j->c = c;
-  j->jouer = &jouerHumainConsole;
+  j->play = &playHumainConsole;
   return j;
 }
