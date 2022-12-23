@@ -12,7 +12,7 @@
 
 #include "console.h"
 #include "graphique.h"
-#include "ia.h"
+//#include "ia.h"
 #include "puissance_quatre.h"
 
 #include <stdio.h>
@@ -154,11 +154,12 @@ int main() {
     }
     game->courant = game->j2; // switch au début de partie sur j1
   } else if (interface == 'g') {
-    // play(init_mode_console());
+    ui = makeGraphique();
   } else {
     perror("Erreur inopinée !");
     exit(EXIT_FAILURE);
   }
+
   launchGame(game, *ui);
 
   cleanGame(game, ui);
