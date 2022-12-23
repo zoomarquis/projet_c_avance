@@ -5,6 +5,5 @@
 
 userInterface * makeGraphique();
 Joueur * makeHumainGraphique(Type, Puissance4 *);
-// Joueur *makeIAGraphique
 
 #endif

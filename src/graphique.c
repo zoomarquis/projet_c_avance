@@ -1,8 +1,7 @@
 #include "graphique.h"
-#include "puissance_quatre.h"
+
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 static void affichage_nomme_le_comme_tu_veux(void *data, Puissance4 *game) {
   // afficher le plateau

@@ -1,4 +1,5 @@
 #include "puissance_quatre.h"
+
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -14,8 +15,9 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
   assert(valeur == J1 || valeur == J2);
   unsigned nb_aligne = 1;
   int l = ligne, c = colonne;
-  while (l + deplaL >= 0 && l + deplaL < NB_LIGNE && c + deplaC >= 0 &&
-         c + deplaC < NB_COLONNE && plateau[l + deplaL][c + deplaC] == valeur) {
+  while (nb_aligne < 4 && l + deplaL >= 0 && l + deplaL < NB_LIGNE &&
+         c + deplaC >= 0 && c + deplaC < NB_COLONNE &&
+         plateau[l + deplaL][c + deplaC] == valeur) {
     l += deplaL;
     c += deplaC;
     nb_aligne++;
@@ -24,8 +26,9 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
     return true;
   l = ligne;
   c = colonne;
-  while (l - deplaL >= 0 && l - deplaL < NB_LIGNE && c - deplaC >= 0 &&
-         c - deplaC < NB_COLONNE && plateau[l - deplaL][c - deplaC] == valeur) {
+  while (nb_aligne < 4 && l - deplaL >= 0 && l - deplaL < NB_LIGNE &&
+         c - deplaC >= 0 && c - deplaC < NB_COLONNE &&
+         plateau[l - deplaL][c - deplaC] == valeur) {
     l -= deplaL;
     c -= deplaC;
     nb_aligne++;
@@ -33,7 +36,7 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
   return (nb_aligne >= 4);
 }
 
-static bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
+bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
   if (game->nb_jetons == (NB_COLONNE * NB_LIGNE)) {
     game->courant = NULL;
     return true;
@@ -46,12 +49,18 @@ static bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
   return false;
 }
 
-static void addJeton(Puissance4 *game, unsigned ligne, unsigned colonne) {
+void modifJeton(Puissance4 *game, unsigned ligne, unsigned colonne, Type type) {
   assert(game->courant != NULL);
   assert(ligne >= 0 && ligne < NB_LIGNE);
   assert(colonne >= 0 && colonne < NB_COLONNE);
-  game->plateau[ligne][colonne] = game->courant->c;
-  game->nb_jetons++;
+  if (type != VIDE) {
+    assert(game->plateau[ligne][colonne] == VIDE);
+    game->nb_jetons++;
+  } else {
+    assert(game->plateau[ligne][colonne] != VIDE);
+    game->nb_jetons--;
+  }
+  game->plateau[ligne][colonne] = type;
 }
 
 int testColonne(Plateau plateau, unsigned c) {
@@ -76,7 +85,7 @@ void launchGame(Puissance4 *game, userInterface ui) {
     }
     ui.affichage(ui.data, game);
     ui.getProchainCoup(ui.data, game, &colonne, &ligne);
-    addJeton(game, ligne, colonne);
+    modifJeton(game, ligne, colonne, game->courant->c);
   } while (!(game->fin = testEnd(game, ligne, colonne)));
   ui.affichage(ui.data, game);
 }

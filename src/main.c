@@ -9,8 +9,12 @@
  * @copyright Copyright (c) 2022
  *
  */
+
 #include "console.h"
+#include "graphique.h"
+#include "ia.h"
 #include "puissance_quatre.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,6 +22,7 @@ void clearBuffer() {
   while (getchar() != '\n')
     ;
 }
+// ajouter l'EOF
 
 void choix_interface(char *interface) {
   printf("Choisissez l'interface de jeu. Entrez :\n"
@@ -132,8 +137,8 @@ int main() {
   if (interface == 'c') {
     ui = makeConsole();
     if (mode == 'h') {
-      game->j1 = makeHumainConsole(J1, game);
-      game->j2 = makeHumainConsole(J2, game);
+      game->j1 = makeHumainConsole(J1);
+      game->j2 = makeHumainConsole(J2);
     } /*else if (mode == 'a') {
       game->j1 = initHumainConsole(J1, game);
       game->j2 = initIAConsole(J2, game);

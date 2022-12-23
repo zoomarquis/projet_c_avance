@@ -5,9 +5,9 @@
  * @brief Définition des types et fonctions de base du jeu puissance quatre.
  * @version 0.1
  * @date 2022-12-20
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 
 #ifndef PUISSANCE_QUATRE_H
@@ -22,7 +22,7 @@
 /**
  * @def NB_COLONNE
  * @brief nombre de colonne dans le plateau
-*/
+ */
 #define NB_LIGNE 6
 #define NB_COLONNE 7
 
@@ -31,11 +31,10 @@
  * @brief Représente les cases du plateau
  * @typedef Type
  */
-typedef enum
-{
-    VIDE, //!< Représente une case vide
-    J1, //!< Représente une case qui est occupée par J1
-    J2 //!< Représente une case qui est occupée par J2
+typedef enum {
+  VIDE, //!< Représente une case vide
+  J1,   //!< Représente une case qui est occupée par J1
+  J2    //!< Représente une case qui est occupée par J2
 } Type;
 
 /**
@@ -50,32 +49,30 @@ typedef Type Plateau[NB_LIGNE][NB_COLONNE];
  */
 typedef struct joueur_ Joueur;
 
-/**
- * @brief 
- * 
- */
 typedef struct {
-    Joueur * j1;
-    Joueur * j2;
-    Joueur * courant; // courant à vide => perdu
-    Plateau plateau;
-    bool fin;
-    unsigned nb_jetons;
+  Joueur *j1;
+  Joueur *j2;
+  Joueur *courant; // courant à vide => perdu
+  Plateau plateau;
+  bool fin;
+  unsigned nb_jetons;
 } Puissance4;
 
-struct joueur_{
-    void * data; // arbre decision pour ia
-    Type c;
-    unsigned (*play)(void * data, Puissance4 game);
+struct joueur_ {
+  Type type;
+  unsigned (*play)(Puissance4 *game);
 };
 
 typedef struct {
-    void *data;
-    void (*affichage)(void * data, Puissance4 *game);
-    void (*getProchainCoup)(void *data, Puissance4 * game, unsigned *colonne, unsigned *ligne);
+  void *data;
+  void (*affichage)(void *data, Puissance4 *game);
+  void (*getProchainCoup)(void *data, Puissance4 *game, unsigned *colonne,
+                          unsigned *ligne);
 } userInterface;
 
-int testColonne(Plateau plateau, unsigned c);
+bool testEnd(Puissance4 *, unsigned, unsigned);
+int testColonne(Plateau, unsigned);
+void modifJeton(Puissance4 *, unsigned, unsigned, Type);
 void launchGame(Puissance4 *game, userInterface ui);
 
 #endif

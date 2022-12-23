@@ -3,8 +3,7 @@
 
 #include "puissance_quatre.h"
 
-userInterface * makeConsole();
-Joueur * makeHumainConsole(Type, Puissance4 *);
-// Joueur *makeIAConsole
+userInterface *makeConsole();
+Joueur *makeHumainConsole(Type);
 
 #endif
