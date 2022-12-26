@@ -13,7 +13,7 @@
 #include "choixModes.h"
 #include "console.h"
 #include "graphique.h"
-#include "ia.h"
+//#include "ia.h"
 #include "puissance_quatre.h"
 
 #include <stdio.h>
