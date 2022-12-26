@@ -37,15 +37,15 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
 }
 
 bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
-  if (game->nb_jetons == (NB_COLONNE * NB_LIGNE)) {
-    game->courant = NULL;
-    return true;
-  }
   if (testAlign(game->plateau, l, c, 0, 1)      // horizontal
       || testAlign(game->plateau, l, c, 1, 0)   // vertical
       || testAlign(game->plateau, l, c, 1, 1)   // diagonal
       || testAlign(game->plateau, l, c, 1, -1)) // diagonal /
     return true;
+  if (game->nb_jetons == (NB_COLONNE * NB_LIGNE)) {
+    game->courant = NULL;
+    return true;
+  } // égalité
   return false;
 }
 
@@ -63,7 +63,7 @@ void modifJeton(Puissance4 *game, unsigned ligne, unsigned colonne, Type type) {
   game->plateau[ligne][colonne] = type;
 }
 
-int testColonne(Plateau plateau, unsigned c) {
+int testColonne(Plateau plateau, int c) {
   assert(c >= 0 && c < NB_COLONNE);
   for (int i = NB_LIGNE - 1; i >= 0; i--) {
     if (plateau[i][c] == VIDE)
@@ -72,20 +72,24 @@ int testColonne(Plateau plateau, unsigned c) {
   return -1;
 }
 
+void changerJoueur(Puissance4 *game) {
+  if (game->courant == game->j2)
+    game->courant = game->j1;
+  else if (game->courant == game->j1)
+    game->courant = game->j2;
+  else {
+    perror("Problème inattendu.");
+    exit(EXIT_FAILURE);
+  }
+}
+
 void launchGame(Puissance4 *game, userInterface ui) {
   unsigned colonne, ligne;
   do {
-    if (game->courant == game->j2)
-      game->courant = game->j1;
-    else if (game->courant == game->j1)
-      game->courant = game->j2;
-    else {
-      perror("Problème inattendu.");
-      exit(EXIT_FAILURE);
-    }
+    changerJoueur(game);
     ui.affichage(ui.data, game);
     ui.getProchainCoup(ui.data, game, &colonne, &ligne);
-    modifJeton(game, ligne, colonne, game->courant->c);
+    modifJeton(game, ligne, colonne, game->courant->type);
   } while (!(game->fin = testEnd(game, ligne, colonne)));
   ui.affichage(ui.data, game);
 }

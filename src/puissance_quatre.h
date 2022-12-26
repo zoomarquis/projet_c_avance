@@ -54,13 +54,14 @@ typedef struct {
   Joueur *j2;
   Joueur *courant; // courant à vide => perdu
   Plateau plateau;
-  bool fin;
+  bool fin; // booleen pour la fonction d'affichage
   unsigned nb_jetons;
 } Puissance4;
 
 struct joueur_ {
   Type type;
-  unsigned (*play)(Puissance4 *game);
+  unsigned char profondeur; // pour l'IA
+  unsigned (*play)(Puissance4 *);
 };
 
 typedef struct {
@@ -71,8 +72,9 @@ typedef struct {
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);
-int testColonne(Plateau, unsigned);
+int testColonne(Plateau, int);
 void modifJeton(Puissance4 *, unsigned, unsigned, Type);
-void launchGame(Puissance4 *game, userInterface ui);
+void changerJoueur(Puissance4 *);
+void launchGame(Puissance4 *, userInterface);
 
 #endif

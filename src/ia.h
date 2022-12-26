@@ -3,7 +3,6 @@
 
 #include "puissance_quatre.h"
 
-Joueur *makeIA(Type, Puissance4 *);
-// trois différents ?
+Joueur *makeIA(Type, char);
 
 #endif

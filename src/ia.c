@@ -3,93 +3,118 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#define MAX 1000
+#define MAX 10000
 
 typedef struct {
-  unsigned valeur, profondeur;
+  int indice;
+  int valeur;
 } Couple;
+
+static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
+  if (ligne < 0 || ligne >= NB_LIGNE || colonne < 0 || colonne >= NB_COLONNE)
+    return 0;
+  if (game.plateau[ligne][colonne] == VIDE)
+    return 1;
+  else if (game.plateau[ligne][colonne] == game.courant->type)
+    return 2;
+  return 0;
+}
 
 static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
   // ?
-
   unsigned som = 0;
-  if (ligne - 1 >= 0 && colonne - 1 >= 0 && (game.plateau[ligne][colonne]==VIDE || game.plateau[ligne][colonne]==game.courant->type) {
-  }
+  som += valeurCase(game, ligne - 1, colonne - 1);
+  som += valeurCase(game, ligne - 1, colonne);
+  som += valeurCase(game, ligne - 1, colonne + 1);
+  som += valeurCase(game, ligne, colonne - 1);
+  som += valeurCase(game, ligne, colonne + 1);
+  som += valeurCase(game, ligne + 1, colonne - 1);
+  som += valeurCase(game, ligne + 1, colonne);
+  som += valeurCase(game, ligne + 1, colonne + 1);
+  return som;
 }
 
-static unsigned evaluation(Puissance4 game) {
-  // assert pas fin de partie ?
-  // assert pas ?
-
+static unsigned scoreJoueur(Puissance4 game, Joueur *player) {
+  // assert
   unsigned som = 0;
-  // pour chaque case du tab au joueur : évaluer
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
-      if (game.plateau[i][j] == game.courant->type) {
+      if (game.plateau[i][j] == player->type) {
         som += autour(game, i, j);
       }
     }
   }
+  return som;
 }
 
-int evaluation(Puissance4 *game, unsigned colonne) {
-  assert(game->courant);
-
-  int ret = 1;
-  Joueur *tmp = game->courant;
-  int ligne = testColonne(game->plateau, colonne);
-  if (ligne == -1)
-    return -INF;
-
-  modifJeton(game, ligne, colonne, game->courant->c); // do
-
-  bool res = testEnd(game, ligne, colonne);
-  if (!game->courant) { // quelle valeur si perdu?
-    res = false;
-    game->courant = tmp;
-    // ret =
-  } else if (res)
-    ret = NB_LIGNE * NB_COLONNE; // coup gagnant
-  else {
-    ret += evalAlign(game->plateau, ligne, colonne, 0, 1);
-    ret += evalAlign(game->plateau, ligne, colonne, 1, 0);
-    ret += evalAlign(game->plateau, ligne, colonne, 1, 1);
-    ret += evalAlign(game->plateau, ligne, colonne, 1, -1);
-  }
-
-  modifJeton(game, ligne, colonne, VIDE); // undo
-  return ret;
+static int evaluation(Puissance4 *game) {
+  int val;
+  changerJoueur(game);
+  val = scoreJoueur(*game, game->courant);
+  changerJoueur(game);
+  val -= scoreJoueur(*game, game->courant);
+  return val;
 }
 
-unsigned playIA(Puissance4 *game, unsigned profondeur) {
-  int res, max;    // = ?? minimum
-  unsigned indice; // = ??
-  for (int i = 0; i < NB_COLONNE; i++) {
-    // do
-    // changer de joueur ?
-    res = calcul(game, profondeur - 1);
-    if (max < res) {
-      max = res;
-      indice = i;
+static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
+  Couple res;
+  int ligne;
+  int bestColonne = -1;
+  int bestValeur = MAX + 1;
+  if (colonne != -1) { // premier appel : pas encore joué
+    ligne = testColonne(game->plateau, colonne);
+    ligne++; // le coup qu'on vient de jouer
+    if (testEnd(game, ligne, colonne)) {
+      if (!game->courant) { // egalite
+        return (Couple){colonne, 0};
+      }
+      return (Couple){colonne, MAX};
     }
-    // undo
   }
-  return indice;
+
+  if (profondeur == 0) {
+    return (Couple){colonne, evaluation(game)};
+  }
+
+  for (int i = 0; i < NB_COLONNE; i++) {
+    ligne = testColonne(game->plateau, i);
+    if (ligne != -1) {
+      modifJeton(game, ligne, i, game->courant->type); // do
+      changerJoueur(game);
+      Couple res = minimax(game, profondeur - 1, i);
+      int valeur_courante = -res.valeur;
+      if (valeur_courante < bestValeur) {
+        bestValeur = valeur_courante;
+        bestColonne = i;
+      }
+      changerJoueur(game);
+      modifJeton(game, ligne, i, VIDE); // undo
+    }
+  }
+
+  return (Couple){bestColonne, bestValeur};
 }
 
-int calcul(Puissance4 *game, unsigned profondeur) {
-  int res, max; // = ?? minimum
-  // if (profondeur==0 || testEnd(game,? ligne, ? colonne))
-  // return eval(?)
-  for (int i = 0; i < NB_COLONNE; i++) {
-    // do
-    // changer de joueur ?
-    res = -calcul(game, profondeur - 1);
-    if (max < res) {
-      max = res;
-    }
-    // undo
+// retourne la colonne à jouer
+static unsigned playIA(Puissance4 *game) {
+  Couple res = minimax(game, game->courant->profondeur, -1);
+  assert(res.indice >= 0 && res.indice < NB_COLONNE);
+  return (unsigned)res.indice;
+}
+
+Joueur *makeIA(Type t, char niveau) {
+  assert(niveau == '1' || niveau == '2' || niveau == '3');
+  Joueur *j = malloc(sizeof(Joueur));
+  if (!j) {
+    perror("Problème d'allocation.");
+    exit(EXIT_FAILURE);
   }
-  return max;
+  j->type = t;
+  niveau = niveau - '0';
+  niveau *= 2;
+  j->profondeur = 5; // niveau;
+  j->play = &playIA;
+  return j;
 }
