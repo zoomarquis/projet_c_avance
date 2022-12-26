@@ -66,8 +66,10 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
   if (colonne != -1) { // premier appel : pas encore joué
     ligne = testColonne(game->plateau, colonne);
     ligne++; // le coup qu'on vient de jouer
+    Joueur *tmp = game->courant;
     if (testEnd(game, ligne, colonne)) {
       if (!game->courant) { // egalite
+        game->courant = tmp;
         return (Couple){colonne, 0};
       }
       return (Couple){colonne, MAX};
@@ -83,7 +85,7 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
     if (ligne != -1) {
       modifJeton(game, ligne, i, game->courant->type); // do
       changerJoueur(game);
-      Couple res = minimax(game, profondeur - 1, i);
+      res = minimax(game, profondeur - 1, i);
       int valeur_courante = -res.valeur;
       if (valeur_courante < bestValeur) {
         bestValeur = valeur_courante;
@@ -114,7 +116,7 @@ Joueur *makeIA(Type t, char niveau) {
   j->type = t;
   niveau = niveau - '0';
   niveau *= 2;
-  j->profondeur = 5; // niveau;
+  j->profondeur = niveau;
   j->play = &playIA;
   return j;
 }

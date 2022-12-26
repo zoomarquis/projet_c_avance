@@ -12,8 +12,8 @@
 
 #include "choixModes.h"
 #include "console.h"
-#include "graphique.h"
-//#include "ia.h"
+//#include "graphique.h"
+#include "ia.h"
 #include "puissance_quatre.h"
 
 #include <stdio.h>
@@ -77,7 +77,7 @@ int main() {
     }
     game->courant = game->j2; // switch au début de partie sur j1
   } else if (interface == 'g') {
-    ui = makeGraphique();
+    // ui = makeGraphique();
   } else {
     perror("Erreur inopinée !");
     exit(EXIT_FAILURE);
