@@ -3,7 +3,7 @@
  * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
  * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
  * @brief Définition des types et fonctions de base du jeu puissance quatre.
- * @version 0.1
+ * @version 1.0
  * @date 2022-12-20
  *
  * @copyright Copyright (c) 2022
@@ -11,6 +11,10 @@
  */
 
 #ifndef PUISSANCE_QUATRE_H
+/**
+ * @def PUISSANCE_QUATRE_H
+ * @brief la garde
+ */
 #define PUISSANCE_QUATRE_H
 
 #include <stdbool.h>
@@ -49,22 +53,36 @@ typedef Type Plateau[NB_LIGNE][NB_COLONNE];
  */
 typedef struct joueur_ Joueur;
 
-typedef struct {
-  Joueur *j1;
-  Joueur *j2;
-  Joueur *courant; // courant à vide => perdu
-  Plateau plateau;
-  bool fin; // booleen pour la fonction d'affichage
-  unsigned nb_jetons;
+/**
+ * @struct p4_
+ * @brief Représente un jeu du puissance 4.
+ * @typedef Puissance4 p4_
+ */
+typedef struct p4_ {
+  Joueur *j1;      //<! Pointeur sur J1
+  Joueur *j2;      //<! Pointeur sur J2
+  Joueur *courant; //<! Pointeur sur le joueur courant, si NULL : partie terminée et égalité
+  Plateau plateau; //<! Le plateau (tableau de cases)
+  bool fin; //<! Booléen lorsque le jeu est terminée (pour l'affichage)
+  unsigned nb_jetons; //<! Nombre de jetons sur le plateau
 } Puissance4;
 
+/**
+ * @struct joueur_
+ * @brief Représente un joueur.
+ */
 struct joueur_ {
-  Type type;
-  unsigned char profondeur; // pour l'IA
-  unsigned (*play)(Puissance4 *);
+  Type type; //<! Pour savoir si le joueur est un J1 ou un J2
+  unsigned char profondeur; //<! Si le joueur est une IA, correspond à son niveau de difficulté
+  unsigned (*play)(Puissance4 *); //<! Pointeur de fonction : jouer, récupérer le coup souhaité.
 };
 
-typedef struct {
+/**
+ * @struct ui_
+ * @brief Représente l'interface graphique du jeu.
+ * @typedef userInterface ui_
+ */
+typedef struct ui_{
   void *data;
   void (*affichage)(void *data, Puissance4 *game);
   void (*getProchainCoup)(void *data, Puissance4 *game, unsigned *colonne,

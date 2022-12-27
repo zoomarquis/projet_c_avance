@@ -1,3 +1,16 @@
+/**
+ * @file puissance_quatre.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Ensemble de fonctions de base pour le jeu puissance quatre :
+ * lancer le jeu, tester si la partie est terminée, ajouter / enlever un jeton.
+ * @version 1.0
+ * @date 2022-12-27
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "puissance_quatre.h"
 
 #include <assert.h>

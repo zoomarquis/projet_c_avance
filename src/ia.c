@@ -1,3 +1,17 @@
+/**
+ * @file ia.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Ensemble des fonctions utiles à l'IA : création, play (jouer le
+ * prochain coup) et toutes les fonctions nécessaires au calcul du prochain
+ * coup.
+ * @version 1.0
+ * @date 2022-12-27
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "ia.h"
 
 #include <assert.h>
@@ -5,11 +19,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @def MAX
+ * @brief la valeur maximale d'une évaluation = partie gagnée
+ */
 #define MAX 10000
 
-typedef struct {
-  int indice;
-  int valeur;
+/**
+ * @struct couple_
+ * @brief Un couple indice de la colonne et sa valeur associée.
+ * @typedef Couple couple_
+ */
+typedef struct couple_ {
+  int indice; //!< indice de la colonne
+  int valeur; //!< valeur associée à la colonne
 } Couple;
 
 static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
@@ -115,7 +138,17 @@ Joueur *makeIA(Type t, char niveau) {
   }
   j->type = t;
   niveau = niveau - '0';
-  niveau *= 2;
+  switch (niveau) {
+  case 1:
+    niveau = 2;
+    break;
+  case 2:
+    niveau = 3;
+    break;
+  case 3:
+    niveau = 5;
+    break;
+  }
   j->profondeur = niveau;
   j->play = &playIA;
   return j;

@@ -3,7 +3,7 @@
  * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
  * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
  * @brief Le fichier main du jeu puissance quatre.
- * @version 0.1
+ * @version 1.0
  * @date 2022-12-20
  *
  * @copyright Copyright (c) 2022

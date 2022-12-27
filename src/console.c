@@ -1,5 +1,17 @@
+/**
+ * @file console.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Ensemble de fonctions pour le mode d'interface console du jeu : créer,
+ * afficher, récupérer l'action
+ * @version 1.0
+ * @date 2022-12-27
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "console.h"
-#include "choixModes.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -53,6 +65,12 @@ static void printPlateau(void *data, Puissance4 *game) {
   }
 }
 
+static void clearBuffer() {
+  char c;
+  while ((c = getchar()) != '\n' && (c != EOF))
+    ;
+}
+
 static unsigned playHumainConsole(Puissance4 *game) {
   int coup;
   assert(game->courant);
@@ -82,6 +100,7 @@ static void prochainCoup(void *data, Puissance4 *game, unsigned *colonne,
   *colonne = coup;
   *ligne = testColonne(game->plateau, coup);
   assert(*ligne != -1);
+  printf("\e[1;1H\e[2J");
 }
 
 userInterface *makeConsole() {
@@ -92,6 +111,7 @@ userInterface *makeConsole() {
   }
   ui->affichage = printPlateau;
   ui->getProchainCoup = prochainCoup;
+  printf("\e[1;1H\e[2J");
   return ui;
 }
 
