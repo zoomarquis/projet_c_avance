@@ -100,8 +100,10 @@ void changerJoueur(Puissance4 *game) {
 }
 
 void launchGame(Puissance4 *game, userInterface *ui) {
+  // assert !!
   bool rejouer;
 jouer:
+  game->courant = game->j2;
   ui->initAffichage(ui->data, game);
   do {
     changerJoueur(game);

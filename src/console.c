@@ -141,6 +141,9 @@ bool finDePartie(void *data, Puissance4 *game) {
   return false;
 }
 
+// ne fait rien car pas necessaire en mode console
+void destruction(void *data) {}
+
 /**
  * @brief Crée une interface en mode console.
  *
@@ -152,10 +155,12 @@ userInterface *makeConsole() {
     perror("Problème d'allocation dans makeConsole.");
     return NULL;
   }
+  ui->rageQuit = false;
   ui->initAffichage = printPlateau;
   ui->affichage = printPlateau;
   ui->getProchainCoup = prochainCoup;
   ui->endAffichage = finDePartie;
+  ui->destroy = destruction;
   return ui;
 }
 
@@ -168,8 +173,8 @@ userInterface *makeConsole() {
 Joueur *makeHumainConsole(Type t) {
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {
-    perror("Problème d'allocation.");
-    exit(EXIT_FAILURE);
+    perror("Problème d'allocation dans makeHumainConsole.");
+    return NULL;
   }
   j->type = t;
   j->play = &playHumainConsole;

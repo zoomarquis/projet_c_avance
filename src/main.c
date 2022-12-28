@@ -22,8 +22,8 @@
 Puissance4 *initGame() {
   Puissance4 *game = malloc(sizeof(Puissance4));
   if (!game) {
-    perror("Problème d'allocation.");
-    exit(EXIT_FAILURE);
+    perror("Problème d'allocation dans initGame.");
+    return NULL;
   }
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
@@ -37,8 +37,10 @@ Puissance4 *initGame() {
 static void clean(Puissance4 *game, userInterface *ui) {
   free(game->j1);
   free(game->j2);
-  if (ui)
+  if (ui) {
     ui->destroy(ui->data);
+    free(ui->data);
+  }
   free(ui);
   free(game);
 }
@@ -58,11 +60,14 @@ int main() {
 
   userInterface *ui;
   Puissance4 *game = initGame();
+  if (!game)
+    goto Quitter;
 
   if (interface == 'c') {
     ui = makeConsole();
     if (!ui)
       goto Quitter;
+
     if (mode == 'h') {
       game->j1 = makeHumainConsole(J1);
       game->j2 = makeHumainConsole(J2);
@@ -77,11 +82,13 @@ int main() {
       game->j2 = makeIA(J2, niveau2);
     } else {
       perror("Erreur inopinée !");
-      exit(EXIT_FAILURE);
+      goto Quitter;
     }
-    game->courant = game->j2; // switch au début de partie sur j1
   } else if (interface == 'g') {
     ui = makeGraphique();
+    if (!ui)
+      goto Quitter;
+
     if (mode == 'h') {
       game->j1 = makeHumainGraphique(J1);
       game->j2 = makeHumainGraphique(J2);
@@ -96,19 +103,20 @@ int main() {
       game->j2 = makeIA(J2, niveau2);
     } else {
       perror("Erreur inopinée !");
-      exit(EXIT_FAILURE);
+      goto Quitter;
     }
-    game->courant = game->j2; // switch au début de partie sur j1
   } else {
     perror("Erreur inopinée !");
-    exit(EXIT_FAILURE);
+    goto Quitter;
   }
+  if (!game->j1 || !game->j2)
+    goto Quitter;
 
   launchGame(game, ui);
   clean(game, ui);
   return EXIT_SUCCESS;
 
 Quitter:
-  // clean(game);
+  clean(game, ui);
   return EXIT_FAILURE;
 }

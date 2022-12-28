@@ -187,8 +187,8 @@ Joueur *makeIA(Type t, char niveau) {
   assert(niveau == '1' || niveau == '2' || niveau == '3');
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {
-    perror("Problème d'allocation.");
-    exit(EXIT_FAILURE);
+    perror("Problème d'allocation dans makeIA.");
+    return NULL;
   }
   j->type = t;
   niveau = niveau - '0';
