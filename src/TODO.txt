@@ -16,3 +16,5 @@ règles ?
 main : enlever courant = j2
 assert courant à Null
 launch courant = j2
+
+rapport : choix rejouer suelement le meme mode

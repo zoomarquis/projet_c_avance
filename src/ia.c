@@ -195,7 +195,7 @@ Joueur *makeIA(Type t, char niveau) {
   niveau = niveau - '0';
   switch (niveau) {
   case 1:
-    niveau = 2;
+    niveau = 1;
     break;
   case 2:
     niveau = 3;
