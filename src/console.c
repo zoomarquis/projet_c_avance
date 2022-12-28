@@ -54,6 +54,7 @@ static void printCase(Type v) {
  * @param game le jeu
  */
 static void printPlateau(void *data, Puissance4 *game) {
+  printf("\e[1;1H\e[2J");
   unsigned c, l;
   for (c = 0; c < NB_COLONNE; c++)
     printf("  %u ", c + 1);
@@ -89,8 +90,8 @@ static void clearBuffer() {
 static unsigned playHumainConsole(Puissance4 *game) {
   int coup;
   assert(game->courant);
-  (game->courant->type == J1) ? (printf("Joueur 1 : "))
-                              : (printf("Joueur 2 : "));
+  (game->courant->type == J1) ? (printf("Joueur 1 (X) :"))
+                              : (printf("Joueur 2 (O) :"));
   scanf("%d", &coup);
   while (coup < 1 || coup > NB_COLONNE ||
          testColonne(game->plateau, coup - 1) == -1) {
@@ -118,7 +119,6 @@ static void prochainCoup(void *data, Puissance4 *game) {
   game->colonne = coup;
   game->ligne = testColonne(game->plateau, coup);
   assert(game->ligne != -1);
-  printf("\e[1;1H\e[2J");
 }
 
 void finDePartie(void *data, Puissance4 *game) {
@@ -127,6 +127,15 @@ void finDePartie(void *data, Puissance4 *game) {
   else
     (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
                                 : (printf("Joueur 2 a gagné !\n "));
+  printf("Voulez-vous rejouer ? (o/n) :");
+  char c = getchar();
+  while (c != 'o' && c != 'O' && c != 'N' && c != 'n') {
+    clearBuffer();
+    printf("Entrée incorrecte. Veuillez réessayer : ");
+    c = getchar();
+  }
+  clearBuffer();
+  assert(c != 'o' && c != 'O' && c != 'N' && c != 'n');
 }
 
 /**
@@ -144,7 +153,6 @@ userInterface *makeConsole() {
   ui->affichage = printPlateau;
   ui->getProchainCoup = prochainCoup;
   ui->endAffichage = finDePartie;
-  printf("\e[1;1H\e[2J");
   return ui;
 }
 
