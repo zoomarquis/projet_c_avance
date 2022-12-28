@@ -1,3 +1,16 @@
+/**
+ * @file graphique.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Ensemble de fonctions pour le mode d'interface graphique du jeu : créer,
+ * afficher, récupérer l'action...
+ * @version 1.0
+ * @date 2022-12-28
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "graphique.h"
 
 #include "../include/SDL2/SDL.h"
@@ -5,16 +18,39 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+/**
+ * @def WIDTH
+ * @brief Largeur de la fenêtre
+*/
+/**
+ * @def HEIGHT
+ * @brief Hauteur de la fenêtre
+*/
 #define WIDTH 1200
 #define HEIGHT 900
 
+
+/**
+ * @struct _SDLData
+ * @brief Contient les éléments principaux de l'interface graphique
+ * @typedef SDLData _SDLData
+ */
 typedef struct _SDLData {
-  SDL_Renderer *renderer;
-  SDL_Window *window;
-  SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE];
+  SDL_Renderer *renderer;   //<! Pointeur sur le renderer
+  SDL_Window *window;   //<! Pointeur sur la fenêtre
+  SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE];   //<! Pointeur sur le tableau des textures
 } SDLData;
 
-static int setWindowColor(SDL_Renderer *renderer, SDL_Color color) {
+
+/**
+ * @brief Permet de definir la couleur de fond du renderer donné.
+ *
+ * @param renderer Pointeur sur le renderer en question
+ * @param color La couleur de fond
+ * 
+ * @return int retourne 0 si tout s'est bien passé, -1 sinon
+ */
+static int setRendererColor(SDL_Renderer *renderer, SDL_Color color) {
   if (SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a) < 0)
     return -1;
   if (SDL_RenderClear(renderer) < 0)
@@ -22,6 +58,13 @@ static int setWindowColor(SDL_Renderer *renderer, SDL_Color color) {
   return 0;
 }
 
+/**
+ * @brief Permet de detruire la SDL proprement.
+ *
+ * @param window Pointeur sur la fenêtre
+ * @param renderer Pointeur sur le renderer
+ * @param tab_texture Pointeur sur le tableau des textures
+ */
 static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
                        SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE]) {
   if (NULL != renderer)
@@ -38,7 +81,25 @@ static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
   SDL_Quit();
 }
 
-int EventQuit(void *userdata, SDL_Event *event) {
+/**
+ * @brief Permet de detruire les données du jeu.
+ *
+ * @param data Pointeur les données de l'interface graphique
+ */
+static void destroyData(void *data){
+  SDLData *d = (SDLData *)data;
+  destroySDL(d->window, d->renderer, d->tab_texture);
+  free(d);
+}
+
+/**
+ * @brief Cette fonction est un EventFilter c'est a dire qu'elle est appelée
+ * lorsque l'event Quit est reconnu, elle permet de quitter la SDL lorsque l'utilisateur ragequit
+ *
+ * @param userdata Pointeur le booleen ragequit
+ * @return int valeur de retour obligatoire mais inutile pour nous (utile pour la SDL)
+ */
+static int EventQuit(void *userdata, SDL_Event *event) {
   bool *rQ = (bool *)userdata;
   if (event->type == SDL_QUIT) {
     *rQ = true;
@@ -46,6 +107,14 @@ int EventQuit(void *userdata, SDL_Event *event) {
   return 0;
 }
 
+/**
+ * @brief Permet au joueur humain de jouer un pion.
+ *
+ * @param userdata Pointeur le booleen ragequit
+ * @param game le jeu
+ * 
+ * @return unsigned la colonne où le joueur place un pion
+ */
 static unsigned playHumainGraphique(Puissance4 *game) {
   int coup;
   int grid_cell_width = (WIDTH / NB_COLONNE) - 30;
@@ -65,7 +134,13 @@ static unsigned playHumainGraphique(Puissance4 *game) {
   return coup;
 }
 
-static void prochainCoup(void *data, Puissance4 *game) {
+/**
+ * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
+ * (humain ou IA).
+ *
+ * @param game le jeu
+ */
+static void prochainCoup(Puissance4 *game) {
   assert(game->courant);
   unsigned coup = game->courant->play(game);
   game->colonne = coup;
@@ -73,12 +148,21 @@ static void prochainCoup(void *data, Puissance4 *game) {
   assert(game->ligne != -1);
 }
 
+
+/**
+ * @brief Perme.
+ *
+ * @param userdata Pointeur le booleen ragequit
+ * @param game le jeu
+ * 
+ * @return unsigned la colonne où le joueur place un pion
+ */
 static int initialise_plateau(SDL_Renderer *renderer) {
   // Couleur de fenetre blanche
   SDL_Color blanc = {255, 255, 255, 255};
 
-  if (setWindowColor(renderer, blanc) != 0) {
-    fprintf(stderr, "Erreur setWindowColor : %s", SDL_GetError());
+  if (setRendererColor(renderer, blanc) != 0) {
+    fprintf(stderr, "Erreur setRendererColor : %s", SDL_GetError());
     return -1;
   }
   return 0;
@@ -112,7 +196,7 @@ static int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h) {
   return 0;
 }
 
-int draw_circle(SDL_Renderer *renderer, int x, int y, int radius,
+static int draw_circle(SDL_Renderer *renderer, int x, int y, int radius,
                 SDL_Color color) {
   int status = 0;
   if (SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a) < 0)
@@ -145,7 +229,7 @@ static void updateGraphique(void *data, Puissance4 *game) {
                    grid_cell_height - 10};
 
   SDL_SetRenderTarget(d->renderer, d->tab_texture[game->ligne][game->colonne]);
-  setWindowColor(d->renderer, blanc);
+  setRendererColor(d->renderer, blanc);
   switch (game->plateau[game->ligne][game->colonne]) {
   case J1:
     draw_circle(d->renderer, 250, 250, 240, rouge);
@@ -175,7 +259,7 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
   SDL_Color blanc = {255, 255, 255, 255};
   SDL_Color noir = {0, 0, 0, 255};
   SDL_RenderClear(d->renderer);
-  setWindowColor(d->renderer, blanc);
+  setRendererColor(d->renderer, blanc);
   SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a);
   SDL_Rect rect;
   for (int l = 0; l < NB_LIGNE; l++) {
@@ -191,7 +275,7 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
   SDL_RenderPresent(d->renderer);
 }
 
-static void creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
+static int creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
       d->tab_texture[i][j] =
@@ -199,13 +283,19 @@ static void creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
                             SDL_TEXTUREACCESS_TARGET, 500, 500);
       if (NULL == d->tab_texture[i][j]) {
         fprintf(stderr, "Erreur SDL_CreateTexture : %s", SDL_GetError());
-        return;
+        for(int k = 0; k <= i; k++){
+          for(int l = 0; l < j; l++){
+            SDL_DestroyTexture(d->tab_texture[k][l]);
+          }
+        }
+        return -1;
       }
     }
   }
+  return 0;
 }
 
-bool endAffichage();
+static bool endAffichage();
 
 userInterface *makeGraphique() {
   SDL_Window *window = NULL;
@@ -213,18 +303,33 @@ userInterface *makeGraphique() {
   userInterface *ui = malloc(sizeof(userInterface));
 
   if (!ui) {
-    perror("Problème d'allocation.");
-    exit(EXIT_FAILURE);
+    perror("Problème d'allocation dans makeGraphique.");
+    return NULL;
   }
 
   if (0 != init(&window, &renderer, WIDTH, HEIGHT)) {
+    free(ui);
     destroySDL(window, renderer, NULL);
+    return NULL;
   }
 
   SDLData *d = malloc(sizeof(SDLData));
+  if (!d) {
+    perror("Problème d'allocation dans makeGraphique.");
+    free(ui);
+    destroySDL(window, renderer, NULL);
+    return NULL;
+  }
+
   d->renderer = renderer;
   d->window = window;
-  creer_tab_textures(d, renderer);
+
+  if(0 != creer_tab_textures(d, renderer)){
+    free(ui);
+    free(d);
+    destroySDL(window, renderer, NULL);
+    return NULL;
+  }
 
   SDL_AddEventWatch(EventQuit, d);
 
@@ -233,6 +338,7 @@ userInterface *makeGraphique() {
   ui->initAffichage = initPlateauGraphique;
   ui->affichage = updateGraphique;
   ui->getProchainCoup = prochainCoup;
+  ui->destroy = destroyData;
   ui->endAffichage = NULL;
 
   return ui;
