@@ -35,6 +35,16 @@ typedef struct couple_ {
   int valeur; //!< valeur associée à la colonne
 } Couple;
 
+/**
+ * @brief Évalue une case. Heuristique : si la case appartient au joueur courant
+ * alors elle est évaluée à 2, si elle est vide à 1 et 0 sinon. 0 si la case
+ * n'est pas dans le plateau.
+ *
+ * @param game le jeu
+ * @param ligne le numéro de la ligne de la case à évaluer
+ * @param colonne le numéro de la colonne à évaluer
+ * @return unsigned
+ */
 static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
   if (ligne < 0 || ligne >= NB_LIGNE || colonne < 0 || colonne >= NB_COLONNE)
     return 0;
@@ -45,8 +55,17 @@ static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
   return 0;
 }
 
+/**
+ * @brief Calcule le score d'une case en fonction de toutes les cases autour
+ * (distance de 1) de celle-ci.
+ *
+ * @param game le jeu
+ * @param ligne le numéro de ligne de la case
+ * @param colonne le numéro de colonne de la case
+ * @return unsigned le score de la case
+ */
 static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
-  // ?
+  // assert ?
   unsigned som = 0;
   som += valeurCase(game, ligne - 1, colonne - 1);
   som += valeurCase(game, ligne - 1, colonne);
@@ -59,12 +78,19 @@ static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
   return som;
 }
 
-static unsigned scoreJoueur(Puissance4 game, Joueur *player) {
+/**
+ * @brief Evaluer le score du Joueur courant
+ *
+ * @param game le jeu
+ * @return unsigned le score du joueur
+ */
+static unsigned scoreJoueur(Puissance4 game) {
   // assert
+  assert(game.courant->type != VIDE);
   unsigned som = 0;
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
-      if (game.plateau[i][j] == player->type) {
+      if (game.plateau[i][j] == game.courant->type) {
         som += autour(game, i, j);
       }
     }
@@ -72,15 +98,32 @@ static unsigned scoreJoueur(Puissance4 game, Joueur *player) {
   return som;
 }
 
+/**
+ * @brief Fonction d'évaluation du plateau. (pour le joueur qui n'est pas le
+ * courant car on change de joueur avant l'appel récursif dans minimax mais on
+ * évalue au début de cette même fonction pour le joueur qui vient de jouer)
+ *
+ * @param game le jeu
+ * @return int la valeur associée pour un joueur au plateau
+ */
 static int evaluation(Puissance4 *game) {
   int val;
   changerJoueur(game);
-  val = scoreJoueur(*game, game->courant);
+  val = scoreJoueur(*game);
   changerJoueur(game);
-  val -= scoreJoueur(*game, game->courant);
+  val -= scoreJoueur(*game);
   return val;
 }
 
+/**
+ * @brief Fonction récursive pour déterminer le meilleur coup.
+ *
+ * @param game le jeu
+ * @param profondeur la profondeur pour la récursivité
+ * @param colonne la dernière colonne jouée
+ * @return Couple un couple contenant le meilleur coup : l'indice de la colonne
+ * du meilleur coup et la valeur du meilleur coup
+ */
 static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
   Couple res;
   int ligne;
@@ -122,13 +165,25 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
   return (Couple){bestColonne, bestValeur};
 }
 
-// retourne la colonne à jouer
+/**
+ * @brief Sélectionne la colonne à jouer par l'IA.
+ *
+ * @param game le jeu
+ * @return unsigned la colonne où l'IA place un pion
+ */
 static unsigned playIA(Puissance4 *game) {
   Couple res = minimax(game, game->courant->profondeur, -1);
   assert(res.indice >= 0 && res.indice < NB_COLONNE);
   return (unsigned)res.indice;
 }
 
+/**
+ * @brief Crée un joueur IA.
+ *
+ * @param t le type du Joueur
+ * @param niveau le niveau de difficulté
+ * @return Joueur* un pointeur sur le Joueur créé
+ */
 Joueur *makeIA(Type t, char niveau) {
   assert(niveau == '1' || niveau == '2' || niveau == '3');
   Joueur *j = malloc(sizeof(Joueur));

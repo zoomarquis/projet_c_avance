@@ -44,6 +44,7 @@ void cleanGame(Puissance4 *game, userInterface *ui) {
 
 int main() {
   char interface, mode, niveau, niveau2;
+  printf("\e[1;1H\e[2J");
   printf("PUISSANCE QUATRE\n");
 
   choix_interface(&interface);

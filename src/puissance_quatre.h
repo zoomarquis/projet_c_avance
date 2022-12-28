@@ -27,8 +27,13 @@
  * @def NB_COLONNE
  * @brief nombre de colonne dans le plateau
  */
+/**
+ * @def NB_ALIGNE
+ * @brief nombre de pions alignés pour gagner
+*/
 #define NB_LIGNE 6
 #define NB_COLONNE 7
+#define NB_ALIGNE 4
 
 /**
  * @enum Type
@@ -84,9 +89,11 @@ struct joueur_ {
  */
 typedef struct ui_{
   void *data;
-  void (*affichage)(void *data, Puissance4 *game);
+  void (*initAffichage)(void *data);
+  void (*affichage)(void *data, Puissance4 *game, unsigned colonne, unsigned ligne);
   void (*getProchainCoup)(void *data, Puissance4 *game, unsigned *colonne,
                           unsigned *ligne);
+  void (*endAffichage)(void * data, Puissance4 game);
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);

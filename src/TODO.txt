@@ -8,3 +8,11 @@ ajouter des clear buffer, sélection + mode console
 doc des typedef 
 
 malloc -> test 
+
+rejouer ou quitter.
+
+règles ?
+
+main : enlever courant = j2
+assert courant à Null
+launch courant = j2

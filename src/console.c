@@ -115,7 +115,7 @@ static unsigned playHumainConsole(Puissance4 *game) {
 
 /**
  * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
- * (humain ou IA).s
+ * (humain ou IA).
  *
  * @param data les données de l'interface, en mode console : inutile
  * @param game le jeu

@@ -28,25 +28,25 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
   assert(valeur == J1 || valeur == J2);
   unsigned nb_aligne = 1;
   int l = ligne, c = colonne;
-  while (nb_aligne < 4 && l + deplaL >= 0 && l + deplaL < NB_LIGNE &&
+  while (nb_aligne < NB_ALIGNE && l + deplaL >= 0 && l + deplaL < NB_LIGNE &&
          c + deplaC >= 0 && c + deplaC < NB_COLONNE &&
          plateau[l + deplaL][c + deplaC] == valeur) {
     l += deplaL;
     c += deplaC;
     nb_aligne++;
   }
-  if (nb_aligne >= 4)
+  if (nb_aligne >= NB_ALIGNE)
     return true;
   l = ligne;
   c = colonne;
-  while (nb_aligne < 4 && l - deplaL >= 0 && l - deplaL < NB_LIGNE &&
+  while (nb_aligne < NB_ALIGNE && l - deplaL >= 0 && l - deplaL < NB_LIGNE &&
          c - deplaC >= 0 && c - deplaC < NB_COLONNE &&
          plateau[l - deplaL][c - deplaC] == valeur) {
     l -= deplaL;
     c -= deplaC;
     nb_aligne++;
   }
-  return (nb_aligne >= 4);
+  return (nb_aligne >= NB_ALIGNE);
 }
 
 bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
@@ -86,6 +86,7 @@ int testColonne(Plateau plateau, int c) {
 }
 
 void changerJoueur(Puissance4 *game) {
+  assert(game->courant);
   if (game->courant == game->j2)
     game->courant = game->j1;
   else if (game->courant == game->j1)
@@ -98,11 +99,12 @@ void changerJoueur(Puissance4 *game) {
 
 void launchGame(Puissance4 *game, userInterface ui) {
   unsigned colonne, ligne;
+  ui.initAffichage(ui.data);
   do {
     changerJoueur(game);
-    ui.affichage(ui.data, game);
     ui.getProchainCoup(ui.data, game, &colonne, &ligne);
     modifJeton(game, ligne, colonne, game->courant->type);
+    ui.affichage(ui.data, game, colonne, ligne);
   } while (!(game->fin = testEnd(game, ligne, colonne)));
-  ui.affichage(ui.data, game);
+  ui.endAffichage(ui.data, *game);
 }
