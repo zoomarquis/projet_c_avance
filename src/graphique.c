@@ -39,11 +39,9 @@ static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
 }
 
 int EventQuit(void *userdata, SDL_Event *event) {
-  // SDLData *d = (SDLData *)userdata;
-  //  bool rageQuit à passer à vrai
+  bool *rQ = (bool *)userdata;
   if (event->type == SDL_QUIT) {
-    // rageQuit à vrai;
-    // destroySDL(d->window, d->renderer, d->tab_texture);
+    *rQ = true;
   }
   return 0;
 }
@@ -76,7 +74,7 @@ static void prochainCoup(void *data, Puissance4 *game) {
 }
 
 static int initialise_plateau(SDL_Renderer *renderer) {
-  // Couleur de fenetre bleue
+  // Couleur de fenetre blanche
   SDL_Color blanc = {255, 255, 255, 255};
 
   if (setWindowColor(renderer, blanc) != 0) {
