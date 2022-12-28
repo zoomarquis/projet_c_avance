@@ -89,7 +89,7 @@ struct joueur_ {
  */
 typedef struct ui_{
   void *data;
-  void (*initAffichage)(void *data, Puissance4 *game);
+  void (*initAffichage)(void *data, Puissance4 *game, unsigned colonne, unsigned ligne);
   void (*affichage)(void *data, Puissance4 *game, unsigned colonne, unsigned ligne);
   void (*getProchainCoup)(void *data, Puissance4 *game, unsigned *colonne,
                           unsigned *ligne);

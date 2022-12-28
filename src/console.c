@@ -53,7 +53,8 @@ static void printCase(Type v) {
  * @param data les données de l'interface, en mode console : inutile
  * @param game le jeu
  */
-static void printPlateau(void *data, Puissance4 *game) {
+static void printPlateau(void *data, Puissance4 *game, unsigned colonne,
+                         unsigned ligne) {
   unsigned c, l;
   for (c = 0; c < NB_COLONNE; c++)
     printf("  %u ", c + 1);
@@ -143,8 +144,10 @@ userInterface *makeConsole() {
     perror("Problème d'allocation.");
     exit(EXIT_FAILURE);
   }
+  ui->initAffichage = printPlateau;
   ui->affichage = printPlateau;
   ui->getProchainCoup = prochainCoup;
+  ui->endAffichage = finDePartie;
   printf("\e[1;1H\e[2J");
   return ui;
 }
