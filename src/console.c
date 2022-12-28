@@ -17,6 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief Affiche une ligne de pointillés pour séparer 2 rangées du plateau.
+ */
 static void printLigneIntermediaire() {
   printf("\n");
   for (int c = 0; c < NB_COLONNE; c++)
@@ -25,6 +28,11 @@ static void printLigneIntermediaire() {
   printf("\n");
 }
 
+/**
+ * @brief Affiche une case du plateau.
+ *
+ * @param v le type de la case à afficher
+ */
 static void printCase(Type v) {
   switch (v) {
   case VIDE:
@@ -39,6 +47,12 @@ static void printCase(Type v) {
   }
 }
 
+/**
+ * @brief Affiche le plateau de jeu.
+ *
+ * @param data les données de l'interface, en mode console : inutile
+ * @param game le jeu
+ */
 static void printPlateau(void *data, Puissance4 *game) {
   unsigned c, l;
   for (c = 0; c < NB_COLONNE; c++)
@@ -58,19 +72,28 @@ static void printPlateau(void *data, Puissance4 *game) {
 
   if (game->fin) {
     if (!game->courant)
-      printf("Perdu !\n");
+      printf("Égalité !\n");
     else
       (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
                                   : (printf("Joueur 2 a gagné !\n "));
   }
 }
 
+/**
+ * @brief Supprime ce qu'il y a dans le buffer de stdin.
+ */
 static void clearBuffer() {
   char c;
   while ((c = getchar()) != '\n' && (c != EOF))
     ;
 }
 
+/**
+ * @brief Permet au joueur humain de jouer un pion.
+ *
+ * @param game le jeu
+ * @return unsigned la colonne où le joueur place un pion
+ */
 static unsigned playHumainConsole(Puissance4 *game) {
   int coup;
   assert(game->courant);
@@ -89,10 +112,16 @@ static unsigned playHumainConsole(Puissance4 *game) {
   }
   return coup - 1;
 }
-// que faire si pas ok ?
-// vider buffer
-// modifier int en unsigned ?
 
+/**
+ * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
+ * (humain ou IA).s
+ *
+ * @param data les données de l'interface, en mode console : inutile
+ * @param game le jeu
+ * @param colonne [out] la colonne du prochain coup
+ * @param ligne [out] la ligne du prochain coup
+ */
 static void prochainCoup(void *data, Puissance4 *game, unsigned *colonne,
                          unsigned *ligne) {
   assert(game->courant);
@@ -103,6 +132,11 @@ static void prochainCoup(void *data, Puissance4 *game, unsigned *colonne,
   printf("\e[1;1H\e[2J");
 }
 
+/**
+ * @brief Crée une interface en mode console.
+ *
+ * @return userInterface* un pointeur sur l'inferface crée
+ */
 userInterface *makeConsole() {
   userInterface *ui = malloc(sizeof(userInterface));
   if (!ui) {
@@ -115,6 +149,12 @@ userInterface *makeConsole() {
   return ui;
 }
 
+/**
+ * @brief Crée un joueur humain en mode console.
+ *
+ * @param t le type du Joueur
+ * @return Joueur* un pointeur sur le Joueur créé
+ */
 Joueur *makeHumainConsole(Type t) {
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {

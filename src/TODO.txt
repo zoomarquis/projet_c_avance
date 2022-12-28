@@ -1,0 +1,10 @@
+printPlateau -> Puissance4 *game en Puissance4 game ?
+play(HumainConsole) faire la meme chose ?
+playHuainConsole -> coup int au lieu de unsigned ?
+ajouter des clear buffer, sélection + mode console
+
+2 clearBuffer ? le mettre dans puissance4.c ??
+
+doc des typedef 
+
+malloc -> test 

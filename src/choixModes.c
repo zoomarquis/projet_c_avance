@@ -12,14 +12,24 @@
  */
 
 #include "choixModes.h"
+#include <assert.h>
 #include <stdio.h>
 
+/**
+ * @brief Supprime ce qu'il y a dans le buffer de stdin.
+ */
 static void clearBuffer() {
   char c;
   while ((c = getchar()) != '\n' && (c != EOF))
     ;
 }
 
+/**
+ * @brief Dialogue avec l'utilisateur pour lui permettre de choisir le mode
+ * d'interface avec lequel il souhaite jouer.
+ *
+ * @param interface un caractère représentant le mode souhaité
+ */
 void choix_interface(char *interface) {
   printf("Choisissez l'interface de jeu. Entrez :\n"
          "'g' pour jouer en mode interface graphique\n"
@@ -32,8 +42,15 @@ void choix_interface(char *interface) {
     scanf("%c", interface);
     clearBuffer();
   }
+  assert(*interface == 'c' || *interface == 'g');
 }
 
+/**
+ * @brief Dialogue avec l'utilisateur pour lui permettre de choisir le mode
+ * de jeu avec lequel il souhaite jouer.
+ *
+ * @param mode un caractère représentant le mode souhaité
+ */
 void choix_mode(char *mode) {
   printf("Choisissez un mode de jeu. Entrez :\n"
          "'h' pour jouer à deux\n"
@@ -48,8 +65,15 @@ void choix_mode(char *mode) {
     scanf("%c", mode);
     clearBuffer();
   }
+  assert(*mode == 'h' || *mode == 'a' || *mode == 'i' || *mode == 's');
 }
 
+/**
+ * @brief Dialogue avec l'utilisateur pour lui permettre de choisir le niveau de
+ * l'IA avec lequel il souhaite jouer.
+ *
+ * @param niveau un caractère représentant le niveau souhaité
+ */
 void choix_niveau(char *niveau) {
   printf("Choisissez le niveau de l'intelligence artificielle. Entrez :\n"
          "'1' pour le mode facile\n"
@@ -62,8 +86,16 @@ void choix_niveau(char *niveau) {
     scanf("%c", niveau);
     clearBuffer();
   }
+  assert(*niveau == '1' || *niveau == '2' || *niveau == '3');
 }
 
+/**
+ * @brief Dialogue avec l'utilisateur pour lui permettre de choisir les niveaux
+ * des 2 IA avec lequel il souhaite jouer.
+ *
+ * @param niveau1 un caractère représentant le niveau de l'IA n°1
+ * @param niveau2 un caractère représentant le niveau de l'IA n°2
+ */
 void choix_niveaux(char *niveau1, char *niveau2) {
   printf("Choisissez le niveau de la première intelligence artificielle. "
          "Entrez :\n"
@@ -90,4 +122,6 @@ void choix_niveaux(char *niveau1, char *niveau2) {
     scanf("%c", niveau1);
     clearBuffer();
   }
+  assert(*niveau1 == '1' || *niveau1 == '2' || *niveau1 == '3');
+  assert(*niveau2 == '1' || *niveau2 == '2' || *niveau2 == '3');
 }
