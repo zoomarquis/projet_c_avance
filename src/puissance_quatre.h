@@ -89,11 +89,11 @@ struct joueur_ {
  */
 typedef struct ui_{
   void *data;
-  void (*initAffichage)(void *data);
+  void (*initAffichage)(void *data, Puissance4 *game);
   void (*affichage)(void *data, Puissance4 *game, unsigned colonne, unsigned ligne);
   void (*getProchainCoup)(void *data, Puissance4 *game, unsigned *colonne,
                           unsigned *ligne);
-  void (*endAffichage)(void * data, Puissance4 game);
+  void (*endAffichage)(void * data, Puissance4 *game);
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);

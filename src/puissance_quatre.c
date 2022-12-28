@@ -99,12 +99,12 @@ void changerJoueur(Puissance4 *game) {
 
 void launchGame(Puissance4 *game, userInterface ui) {
   unsigned colonne, ligne;
-  ui.initAffichage(ui.data);
+  ui.initAffichage(ui.data, game);
   do {
     changerJoueur(game);
     ui.getProchainCoup(ui.data, game, &colonne, &ligne);
     modifJeton(game, ligne, colonne, game->courant->type);
     ui.affichage(ui.data, game, colonne, ligne);
   } while (!(game->fin = testEnd(game, ligne, colonne)));
-  ui.endAffichage(ui.data, *game);
+  ui.endAffichage(ui.data, game);
 }
