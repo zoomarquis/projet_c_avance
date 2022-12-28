@@ -53,8 +53,7 @@ static void printCase(Type v) {
  * @param data les données de l'interface, en mode console : inutile
  * @param game le jeu
  */
-static void printPlateau(void *data, Puissance4 *game, unsigned colonne,
-                         unsigned ligne) {
+static void printPlateau(void *data, Puissance4 *game) {
   unsigned c, l;
   for (c = 0; c < NB_COLONNE; c++)
     printf("  %u ", c + 1);
@@ -70,14 +69,6 @@ static void printPlateau(void *data, Puissance4 *game, unsigned colonne,
   for (c = 0; c < NB_COLONNE; c++)
     printf("  %u ", c + 1);
   printf("\n");
-
-  if (game->fin) {
-    if (!game->courant)
-      printf("Égalité !\n");
-    else
-      (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
-                                  : (printf("Joueur 2 a gagné !\n "));
-  }
 }
 
 /**
@@ -120,17 +111,22 @@ static unsigned playHumainConsole(Puissance4 *game) {
  *
  * @param data les données de l'interface, en mode console : inutile
  * @param game le jeu
- * @param colonne [out] la colonne du prochain coup
- * @param ligne [out] la ligne du prochain coup
  */
-static void prochainCoup(void *data, Puissance4 *game, unsigned *colonne,
-                         unsigned *ligne) {
+static void prochainCoup(void *data, Puissance4 *game) {
   assert(game->courant);
   unsigned coup = game->courant->play(game);
-  *colonne = coup;
-  *ligne = testColonne(game->plateau, coup);
-  assert(*ligne != -1);
+  game->colonne = coup;
+  game->ligne = testColonne(game->plateau, coup);
+  assert(game->ligne != -1);
   printf("\e[1;1H\e[2J");
+}
+
+void finDePartie(void *data, Puissance4 *game) {
+  if (!game->courant)
+    printf("Égalité !\n");
+  else
+    (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
+                                : (printf("Joueur 2 a gagné !\n "));
 }
 
 /**

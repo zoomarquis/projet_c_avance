@@ -68,7 +68,7 @@ typedef struct p4_ {
   Joueur *j2;      //<! Pointeur sur J2
   Joueur *courant; //<! Pointeur sur le joueur courant, si NULL : partie terminée et égalité
   Plateau plateau; //<! Le plateau (tableau de cases)
-  bool fin; //<! Booléen lorsque le jeu est terminée (pour l'affichage)
+  unsigned ligne, colonne; //!< dernier coup joué
   unsigned nb_jetons; //<! Nombre de jetons sur le plateau
 } Puissance4;
 
@@ -89,10 +89,9 @@ struct joueur_ {
  */
 typedef struct ui_{
   void *data;
-  void (*initAffichage)(void *data, Puissance4 *game, unsigned colonne, unsigned ligne);
-  void (*affichage)(void *data, Puissance4 *game, unsigned colonne, unsigned ligne);
-  void (*getProchainCoup)(void *data, Puissance4 *game, unsigned *colonne,
-                          unsigned *ligne);
+  void (*initAffichage)(void *data, Puissance4 *game);
+  void (*affichage)(void *data, Puissance4 *game);
+  void (*getProchainCoup)(void *data, Puissance4 *game);
   void (*endAffichage)(void * data, Puissance4 *game);
 } userInterface;
 

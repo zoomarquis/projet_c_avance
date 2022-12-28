@@ -30,7 +30,6 @@ Puissance4 *initGame() {
       game->plateau[i][j] = VIDE;
     }
   } // init plateau
-  game->fin = false;
   game->nb_jetons = 0;
   return game;
 }
