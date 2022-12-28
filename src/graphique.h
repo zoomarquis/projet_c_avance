@@ -20,6 +20,6 @@
 #include "puissance_quatre.h"
 
 userInterface * makeGraphique();
-Joueur * makeHumainGraphique(Type, Puissance4 *);
+Joueur * makeHumainGraphique(Type);
 
 #endif

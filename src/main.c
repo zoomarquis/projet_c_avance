@@ -34,9 +34,11 @@ Puissance4 *initGame() {
   return game;
 }
 
-void cleanGame(Puissance4 *game, userInterface *ui) {
+static void clean(Puissance4 *game, userInterface *ui) {
   free(game->j1);
   free(game->j2);
+  if (ui)
+    ui->destroy(ui->data);
   free(ui);
   free(game);
 }
@@ -59,6 +61,8 @@ int main() {
 
   if (interface == 'c') {
     ui = makeConsole();
+    if (!ui)
+      goto Quitter;
     if (mode == 'h') {
       game->j1 = makeHumainConsole(J1);
       game->j2 = makeHumainConsole(J2);
@@ -100,9 +104,11 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
-  launchGame(game, *ui);
-
-  cleanGame(game, ui);
-
+  launchGame(game, ui);
+  clean(game, ui);
   return EXIT_SUCCESS;
+
+Quitter:
+  // clean(game);
+  return EXIT_FAILURE;
 }

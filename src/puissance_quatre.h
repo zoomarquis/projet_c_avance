@@ -89,16 +89,18 @@ struct joueur_ {
  */
 typedef struct ui_{
   void *data;
+  bool rageQuit;
   void (*initAffichage)(void *data, Puissance4 *game);
   void (*affichage)(void *data, Puissance4 *game);
   void (*getProchainCoup)(void *data, Puissance4 *game);
-  void (*endAffichage)(void * data, Puissance4 *game);
+  bool (*endAffichage)(void * data, Puissance4 *game);
+  void (*destroy)(void *data);
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);
 int testColonne(Plateau, int);
 void modifJeton(Puissance4 *, unsigned, unsigned, Type);
 void changerJoueur(Puissance4 *);
-void launchGame(Puissance4 *, userInterface);
+void launchGame(Puissance4 *, userInterface *);
 
 #endif

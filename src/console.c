@@ -14,6 +14,7 @@
 #include "console.h"
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -121,13 +122,13 @@ static void prochainCoup(void *data, Puissance4 *game) {
   assert(game->ligne != -1);
 }
 
-void finDePartie(void *data, Puissance4 *game) {
+bool finDePartie(void *data, Puissance4 *game) {
   if (!game->courant)
     printf("Égalité !\n");
   else
     (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
                                 : (printf("Joueur 2 a gagné !\n "));
-  printf("Voulez-vous rejouer ? (o/n) :");
+  /*printf("Voulez-vous rejouer ? (o/n) :");
   char c = getchar();
   while (c != 'o' && c != 'O' && c != 'N' && c != 'n') {
     clearBuffer();
@@ -136,6 +137,8 @@ void finDePartie(void *data, Puissance4 *game) {
   }
   clearBuffer();
   assert(c != 'o' && c != 'O' && c != 'N' && c != 'n');
+  */
+  return false;
 }
 
 /**
@@ -146,8 +149,8 @@ void finDePartie(void *data, Puissance4 *game) {
 userInterface *makeConsole() {
   userInterface *ui = malloc(sizeof(userInterface));
   if (!ui) {
-    perror("Problème d'allocation.");
-    exit(EXIT_FAILURE);
+    perror("Problème d'allocation dans makeConsole.");
+    return NULL;
   }
   ui->initAffichage = printPlateau;
   ui->affichage = printPlateau;

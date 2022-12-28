@@ -18,3 +18,6 @@ assert courant à Null
 launch courant = j2
 
 rapport : choix rejouer suelement le meme mode
+
+gestion des erreurs
+malloc -> free le reste et exit failure

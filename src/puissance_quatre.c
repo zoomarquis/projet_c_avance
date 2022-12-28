@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define RAGE_QUIT
+
 static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
                       int deplaL, int deplaC) {
   assert(ligne >= 0 && ligne < NB_LIGNE);
@@ -97,13 +99,20 @@ void changerJoueur(Puissance4 *game) {
   }
 }
 
-void launchGame(Puissance4 *game, userInterface ui) {
-  ui.initAffichage(ui.data, game);
+void launchGame(Puissance4 *game, userInterface *ui) {
+  bool rejouer;
+jouer:
+  ui->initAffichage(ui->data, game);
   do {
     changerJoueur(game);
-    ui.getProchainCoup(ui.data, game);
+    // tester le rage quit? return;
+    ui->getProchainCoup(ui->data, game);
     modifJeton(game, game->ligne, game->colonne, game->courant->type);
-    ui.affichage(ui.data, game);
+    ui->affichage(ui->data, game);
   } while (!(testEnd(game, game->ligne, game->colonne)));
-  ui.endAffichage(ui.data, game);
+  rejouer = ui->endAffichage(ui->data, game);
+  if (rejouer) {
+    // nettoyer game
+    goto jouer;
+  }
 }
