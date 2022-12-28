@@ -12,7 +12,7 @@
 
 #include "choixModes.h"
 #include "console.h"
-//#include "graphique.h"
+#include "graphique.h"
 #include "ia.h"
 #include "puissance_quatre.h"
 
@@ -77,7 +77,24 @@ int main() {
     }
     game->courant = game->j2; // switch au début de partie sur j1
   } else if (interface == 'g') {
-    // ui = makeGraphique();
+    ui = makeGraphique();
+    if (mode == 'h') {
+      game->j1 = makeHumainGraphique(J1);
+      game->j2 = makeHumainGraphique(J2);
+    } else if (mode == 'a') {
+      game->j1 = makeHumainGraphique(J1);
+      game->j2 = makeIA(J2, niveau);
+    } else if (mode == 'i') {
+      game->j1 = makeIA(J1, niveau);
+      game->j2 = makeHumainGraphique(J2);
+    } else if (mode == 's') {
+      game->j1 = makeIA(J1, niveau);
+      game->j2 = makeIA(J2, niveau2);
+    } else {
+      perror("Erreur inopinée !");
+      exit(EXIT_FAILURE);
+    }
+    game->courant = game->j2; // switch au début de partie sur j1
   } else {
     perror("Erreur inopinée !");
     exit(EXIT_FAILURE);
