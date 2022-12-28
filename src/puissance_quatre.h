@@ -70,6 +70,7 @@ typedef struct p4_ {
   Plateau plateau; //<! Le plateau (tableau de cases)
   unsigned ligne, colonne; //!< dernier coup joué
   unsigned nb_jetons; //<! Nombre de jetons sur le plateau
+  bool rageQuit;
 } Puissance4;
 
 /**
@@ -89,10 +90,9 @@ struct joueur_ {
  */
 typedef struct ui_{
   void *data;
-  bool rageQuit;
   void (*initAffichage)(void *data, Puissance4 *game);
   void (*affichage)(void *data, Puissance4 *game);
-  void (*getProchainCoup)(void *data, Puissance4 *game);
+  void (*getProchainCoup)(Puissance4 *game);
   bool (*endAffichage)(void * data, Puissance4 *game);
   void (*destroy)(void *data);
 } userInterface;

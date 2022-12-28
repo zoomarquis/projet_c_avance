@@ -18,8 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define RAGE_QUIT
-
 static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
                       int deplaL, int deplaC) {
   assert(ligne >= 0 && ligne < NB_LIGNE);
@@ -99,6 +97,15 @@ void changerJoueur(Puissance4 *game) {
   }
 }
 
+static void reInitGame(Puissance4 *game) {
+  for (int i = 0; i < NB_LIGNE; i++) {
+    for (int j = 0; j < NB_COLONNE; j++) {
+      game->plateau[i][j] = VIDE;
+    }
+  }
+  game->nb_jetons = 0;
+}
+
 void launchGame(Puissance4 *game, userInterface *ui) {
   // assert !!
   bool rejouer;
@@ -107,14 +114,21 @@ jouer:
   ui->initAffichage(ui->data, game);
   do {
     changerJoueur(game);
-    // tester le rage quit? return;
-    ui->getProchainCoup(ui->data, game);
+    if (game->rageQuit)
+      return;
+    ui->getProchainCoup(game); // graphique ? -> return ;
+    if (game->rageQuit)
+      return;
     modifJeton(game, game->ligne, game->colonne, game->courant->type);
     ui->affichage(ui->data, game);
   } while (!(testEnd(game, game->ligne, game->colonne)));
+  if (game->rageQuit) // celui là nécessaire ?
+    return;
   rejouer = ui->endAffichage(ui->data, game);
+  if (game->rageQuit)
+    return;
   if (rejouer) {
-    // nettoyer game
+    reInitGame(game);
     goto jouer;
   }
 }

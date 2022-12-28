@@ -114,7 +114,7 @@ static unsigned playHumainConsole(Puissance4 *game) {
  * @param data les données de l'interface, en mode console : inutile
  * @param game le jeu
  */
-static void prochainCoup(void *data, Puissance4 *game) {
+static void prochainCoup(Puissance4 *game) {
   assert(game->courant);
   unsigned coup = game->courant->play(game);
   game->colonne = coup;
@@ -155,7 +155,6 @@ userInterface *makeConsole() {
     perror("Problème d'allocation dans makeConsole.");
     return NULL;
   }
-  ui->rageQuit = false;
   ui->initAffichage = printPlateau;
   ui->affichage = printPlateau;
   ui->getProchainCoup = prochainCoup;

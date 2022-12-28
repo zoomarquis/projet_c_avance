@@ -21,3 +21,9 @@ rapport : choix rejouer suelement le meme mode
 
 gestion des erreurs
 malloc -> free le reste et exit failure
+
+graphique : malloc -> verif les 2 malloc
+
+rage quit dans prochain coup de graphique
+
+vérif utlité des stdbool
