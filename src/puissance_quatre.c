@@ -175,19 +175,13 @@ jouer:
   ui->initAffichage(ui->data, game);
   do {
     changerJoueur(game);
-    if (game->rageQuit)
-      return;
-    ui->getProchainCoup(game); // graphique ? -> return ;
+    ui->getProchainCoup(game);
     if (game->rageQuit)
       return;
     modifJeton(game, game->ligne, game->colonne, game->courant->type);
     ui->affichage(ui->data, game);
   } while (!(testEnd(game, game->ligne, game->colonne)));
-  if (game->rageQuit) // celui là nécessaire ?
-    return;
   rejouer = ui->endAffichage(ui->data, game);
-  if (game->rageQuit)
-    return;
   if (rejouer)
     goto jouer;
 }
