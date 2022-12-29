@@ -93,7 +93,7 @@ static unsigned playHumainConsole(Puissance4 *game) {
   assert(game->courant);
   (game->courant->type == J1) ? (printf("Joueur 1 (X) :"))
                               : (printf("Joueur 2 (O) :"));
-  scanf("%d", &coup);
+  scanf("%d", &coup); // transfo en getchar ?
   while (coup < 1 || coup > NB_COLONNE ||
          testColonne(game->plateau, coup - 1) == -1) {
     if (coup < 1 || coup > NB_COLONNE) {
@@ -104,6 +104,7 @@ static unsigned playHumainConsole(Puissance4 *game) {
     clearBuffer();
     scanf("%d", &coup);
   }
+  clearBuffer();
   return coup - 1;
 }
 
@@ -111,7 +112,6 @@ static unsigned playHumainConsole(Puissance4 *game) {
  * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
  * (humain ou IA).
  *
- * @param data les données de l'interface, en mode console : inutile
  * @param game le jeu
  */
 static void prochainCoup(Puissance4 *game) {
@@ -122,13 +122,22 @@ static void prochainCoup(Puissance4 *game) {
   assert(game->ligne != -1);
 }
 
-bool finDePartie(void *data, Puissance4 *game) {
+/**
+ * @brief Lorsque la partie est terminée, affiche le plateau et dialogue avec
+ * l'utilisateur pour savoir si il veut rejouer ou non.
+ *
+ * @param data les données de l'interface, en mode console : inutile
+ * @param game le jeu
+ * @return true si l'utilisateur veut rejour
+ * @return false si l'utilisateur veut arrêter
+ */
+static bool finDePartie(void *data, Puissance4 *game) {
   if (!game->courant)
     printf("Égalité !\n");
   else
     (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
                                 : (printf("Joueur 2 a gagné !\n "));
-  /*printf("Voulez-vous rejouer ? (o/n) :");
+  printf("Voulez-vous rejouer ? (o/n) :");
   char c = getchar();
   while (c != 'o' && c != 'O' && c != 'N' && c != 'n') {
     clearBuffer();
@@ -137,17 +146,21 @@ bool finDePartie(void *data, Puissance4 *game) {
   }
   clearBuffer();
   assert(c != 'o' && c != 'O' && c != 'N' && c != 'n');
-  */
-  return false;
+  return (c == 'o' || c == 'O');
 }
 
-// ne fait rien car pas necessaire en mode console
-void destruction(void *data) {}
+/**
+ * @brief Ne fait rien, en mode console on ne peut pas rage quit.
+ *
+ *@param data les données de l'interface, en mode console : inutile
+ */
+static void destruction(void *data) {}
 
 /**
  * @brief Crée une interface en mode console.
  *
- * @return userInterface* un pointeur sur l'inferface crée
+ * @return userInterface* un pointeur sur l'inferface créée,
+ * NULL en cas de problème d'allocation
  */
 userInterface *makeConsole() {
   userInterface *ui = malloc(sizeof(userInterface));
@@ -167,7 +180,8 @@ userInterface *makeConsole() {
  * @brief Crée un joueur humain en mode console.
  *
  * @param t le type du Joueur
- * @return Joueur* un pointeur sur le Joueur créé
+ * @return Joueur* un pointeur sur le Joueur créé,
+ * NULL en cas de problème d'allocation
  */
 Joueur *makeHumainConsole(Type t) {
   Joueur *j = malloc(sizeof(Joueur));
