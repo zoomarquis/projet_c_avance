@@ -298,24 +298,45 @@ static int creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
 
 static bool endAffichage(void *data, Puissance4 *game){
   SDLData *d = (SDLData *)data;
-  TTF_Font* Sans = TTF_OpenFont("Sans.ttf", 24);
-  SDL_Color noir = {0, 0, 0};
 
   if (!game->courant){
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "Egalité !", noir);
-    SDL_Texture* Message = SDL_CreateTextureFromSurface(d->renderer, surfaceMessage);
-    SDL_Rect Message_rect = {0, 0, 100, 100};
-    SDL_RenderCopy(d->renderer, Message, NULL, &Message_rect);
+    SDL_Surface *egalite = SDL_LoadBMP("img/egalite.bmp");
+    if(!egalite)
+    {
+      printf("Erreur de chargement de l'image : %s",SDL_GetError());
+      return -1;
+    }
+    SDL_Texture* egaliteTexture = SDL_CreateTextureFromSurface(d->renderer,egalite);
+    if(!egaliteTexture)
+    {
+      printf("Erreur de chargement de la surface : %s",SDL_GetError());
+      return -1;
+    }
+    SDL_Rect rect = {0, 0, 100, 100};
+    SDL_RenderCopy(d->renderer, egaliteTexture, NULL, &rect);
+    SDL_RenderPresent(d->renderer);
     //SDL_FreeSurface(surfaceMessage);
     //SDL_DestroyTexture(Message);
   }else{
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "oscour !", noir);
-    SDL_Texture* Message = SDL_CreateTextureFromSurface(d->renderer, surfaceMessage);
-    SDL_Rect Message_rect = {0, 0, 100, 100};
-    SDL_RenderCopy(d->renderer, Message, NULL, &Message_rect);
+    SDL_Surface *egalite = SDL_LoadBMP("img/egalite.bmp");
+    if(!egalite)
+    {
+      printf("Erreur de chargement de l'image : %s",SDL_GetError());
+      return -1;
+    }
+    SDL_Texture* egaliteTexture = SDL_CreateTextureFromSurface(d->renderer,egalite);
+    if(!egaliteTexture)
+    {
+      printf("Erreur de chargement de la surface : %s",SDL_GetError());
+      return -1;
+    }
+    SDL_Rect rect = {0, 0, 100, 100};
+    SDL_RenderCopy(d->renderer, egaliteTexture, NULL, &rect);
+    SDL_RenderPresent(d->renderer);
     //SDL_FreeSurface(surfaceMessage);
     //SDL_DestroyTexture(Message);
   }
+  return 0;
 }
 
 userInterface *makeGraphique(Puissance4* game) {
