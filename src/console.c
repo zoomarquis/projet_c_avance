@@ -141,16 +141,16 @@ static bool finDePartie(void *data, Puissance4 *game) {
     printf("Égalité !\n");
   else
     (game->courant->type == J1) ? (printf("Joueur 1 a gagné !\n"))
-                                : (printf("Joueur 2 a gagné !\n "));
-  printf("Voulez-vous rejouer ? (o/n) :");
+                                : (printf("Joueur 2 a gagné !\n"));
+  printf("Voulez-vous rejouer ? (o/n): ");
   char c = getchar();
   while (c != 'o' && c != 'O' && c != 'N' && c != 'n') {
     clearBuffer();
     printf("Entrée incorrecte. Veuillez réessayer : ");
     c = getchar();
   }
+  assert(c == 'o' || c == 'O' || c == 'N' || c == 'n');
   clearBuffer();
-  assert(c != 'o' && c != 'O' && c != 'N' && c != 'n');
   return (c == 'o' || c == 'O');
 }
 

@@ -68,7 +68,7 @@ int main() {
     choix_niveaux(&niveau, &niveau2);
   }
 
-  userInterface *ui;
+  userInterface *ui = NULL;
   Puissance4 *game = initPuissance4();
   if (!game)
     goto Quitter;
