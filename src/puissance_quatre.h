@@ -39,7 +39,7 @@
  * @enum type_
  * @brief Représente les cases du plateau
  * @typedef Type
- * @brief Renommer _type.
+ * @brief Renommer type_.
  */
 typedef enum type_{
   VIDE, //!< Représente une case vide
@@ -49,7 +49,7 @@ typedef enum type_{
 
 /**
  * @typedef Plateau
- * @brief Un tableau à 2 dimensions de Type
+ * @brief Un tableau à 2 dimensions de Type.
  */
 typedef Type Plateau[NB_LIGNE][NB_COLONNE];
 

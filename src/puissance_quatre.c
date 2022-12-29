@@ -73,6 +73,7 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
  * @return false sinon
  */
 bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
+  assert(game);
   assert(game->plateau[l][c] == J1 || game->plateau[l][c] == J2);
   if (testAlign(game->plateau, l, c, 0, 1)      // horizontal
       || testAlign(game->plateau, l, c, 1, 0)   // vertical
@@ -95,6 +96,7 @@ bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
  * @param type le type de jeton à ajouter (peut être vide si c'est à enlever)
  */
 void modifJeton(Puissance4 *game, unsigned ligne, unsigned colonne, Type type) {
+  assert(game);
   assert(game->courant != NULL);
   assert(ligne >= 0 && ligne < NB_LIGNE);
   assert(colonne >= 0 && colonne < NB_COLONNE);
@@ -131,6 +133,7 @@ int testColonne(Plateau plateau, int c) {
  * @param game le jeu
  */
 void changerJoueur(Puissance4 *game) {
+  assert(game);
   assert(game->courant);
   if (game->courant == game->j2)
     game->courant = game->j1;
@@ -145,6 +148,7 @@ void changerJoueur(Puissance4 *game) {
  * @param game le jeu
  */
 static void initGame(Puissance4 *game) {
+  assert(game);
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
       game->plateau[i][j] = VIDE;
@@ -162,7 +166,8 @@ static void initGame(Puissance4 *game) {
  * @param ui l'interface graphique
  */
 void launchGame(Puissance4 *game, userInterface *ui) {
-  // assert !!
+  assert(game);
+  assert(ui);
   bool rejouer;
 jouer:
   initGame(game);
