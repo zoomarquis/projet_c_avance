@@ -66,13 +66,14 @@ typedef struct joueur_ Joueur;
  * @brief Renommer p4_.
  */
 typedef struct p4_ {
-  Joueur *j1;      //<! Pointeur sur J1
-  Joueur *j2;      //<! Pointeur sur J2
-  Joueur *courant; //<! Pointeur sur le joueur courant, si NULL : partie terminée et égalité
-  Plateau plateau; //<! Le plateau (tableau de cases)
-  unsigned ligne, colonne; //!< dernier coup joué
-  unsigned nb_jetons; //<! Nombre de jetons sur le plateau
-  bool rageQuit;
+  Joueur *j1;      //!< Pointeur sur J1
+  Joueur *j2;      //!< Pointeur sur J2
+  Joueur *courant; //!< Pointeur sur le joueur courant, si NULL : partie terminée et égalité
+  Plateau plateau; //!< Le plateau (tableau de cases)
+  unsigned ligne; //!< coordonnée du dernier coup : sa ligne
+  unsigned colonne; //!< coordonnée du dernier coup : sa colonne
+  unsigned nb_jetons; //!< Nombre de jetons sur le plateau
+  bool rageQuit; //!< Booléen en cas de rage quit en mode graphique
 } Puissance4;
 
 /**
@@ -80,9 +81,9 @@ typedef struct p4_ {
  * @brief Représente un joueur.
  */
 struct joueur_ {
-  Type type; //<! Pour savoir si le joueur est un J1 ou un J2
-  unsigned char profondeur; //<! Si le joueur est une IA, correspond à son niveau de difficulté
-  unsigned (*play)(Puissance4 *); //<! Pointeur de fonction : jouer, récupérer le coup souhaité.
+  Type type; //!< Pour savoir si le joueur est un J1 ou un J2
+  unsigned char profondeur; //!< Si le joueur est une IA, correspond à son niveau de difficulté
+  unsigned (*play)(Puissance4 *); //!< Pointeur de fonction : jouer, récupérer le coup souhaité.
 };
 
 /**
@@ -92,12 +93,12 @@ struct joueur_ {
  * @brief Renommer ui_.
  */
 typedef struct ui_{
-  void *data;
-  void (*initAffichage)(void *data, Puissance4 *game);
-  void (*affichage)(void *data, Puissance4 *game);
-  void (*getProchainCoup)(Puissance4 *game);
-  bool (*endAffichage)(void * data, Puissance4 *game);
-  void (*destroy)(void *data);
+  void *data; //!< Void * pour faire de la généricité
+  void (*initAffichage)(void *data, Puissance4 *game); //!< Pointeur de fonction : affiche le plateau en début de partie
+  void (*affichage)(void *data, Puissance4 *game); //!< Pointeur de fonction : met à jour l'affichage du plateau
+  void (*getProchainCoup)(Puissance4 *game);//!< Pointeur de fonction : récupère le prochain coup du joueur courant
+  bool (*endAffichage)(void * data, Puissance4 *game);//!< Pointeur de fonction : affiche le jeu une fois la partie terminée, propose de rejouer
+  void (*destroy)(void *data);//!< Pointeur de fonction : détruit l'interface 
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);
