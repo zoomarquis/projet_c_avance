@@ -93,8 +93,9 @@ static unsigned playHumainConsole(Puissance4 *game) {
   int coup;
   assert(game);
   assert(game->courant);
-  (game->courant->type == J1) ? (printf("Joueur 1 (X) :"))
-                              : (printf("Joueur 2 (O) :"));
+  (game->courant->type == J1) ? (printf("Joueur 1 (X): "))
+                              : (printf("Joueur 2 (O): "));
+  clearBuffer();
   scanf("%d", &coup); // transfo en getchar ?
   while (coup < 1 || coup > NB_COLONNE ||
          testColonne(game->plateau, coup - 1) == -1) {
@@ -102,7 +103,7 @@ static unsigned playHumainConsole(Puissance4 *game) {
       printf("Veuillez entrer un numéro de colonne valide, entre %d et %d.\n",
              1, NB_COLONNE);
     } else
-      printf("Cette colonne est pleine, veuillez en choisir une autre.");
+      printf("Cette colonne est pleine, veuillez en choisir une autre: ");
     clearBuffer();
     scanf("%d", &coup);
   }
