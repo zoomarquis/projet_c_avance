@@ -18,6 +18,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @brief Test l'alignement de jetons à partir d'une case dans une direction
+ * donnée (horizontale, verticale, diagonale dans une sens et dans l'autre)
+ *
+ * @param plateau le plateau de jeu
+ * @param ligne le numéro de la ligne de la case
+ * @param colonne le numéro de la colonne de la case
+ * @param deplaL le déplacement en ligne à effectuer
+ * @param deplaC le déplacemement en colonne à effectuer
+ * @return true si l'alignement est supérieur ou égal au nombre de jetons pour
+ * gagner (puissance 4 = 4)
+ * @return false sinon
+ */
 static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
                       int deplaL, int deplaC) {
   assert(ligne >= 0 && ligne < NB_LIGNE);
@@ -49,19 +62,38 @@ static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
   return (nb_aligne >= NB_ALIGNE);
 }
 
+/**
+ * @brief Test si la partie est terminée (égalité ou victoire) à partir du
+ * dernier jeton joué (seule manière de gagner)
+ *
+ * @param game le jeu
+ * @param l le numéro de ligne du dernier jeton ajouté
+ * @param c le numéro de colonne du dernier jeton ajouté
+ * @return true si la partie est terminée
+ * @return false sinon
+ */
 bool testEnd(Puissance4 *game, unsigned l, unsigned c) {
+  assert(game->plateau[l][c] == J1 || game->plateau[l][c] == J2);
   if (testAlign(game->plateau, l, c, 0, 1)      // horizontal
       || testAlign(game->plateau, l, c, 1, 0)   // vertical
       || testAlign(game->plateau, l, c, 1, 1)   // diagonal
-      || testAlign(game->plateau, l, c, 1, -1)) // diagonal /
-    return true;
+      || testAlign(game->plateau, l, c, 1, -1)) // diagonal
+    return true;                                // joueur courant a gagné
   if (game->nb_jetons == (NB_COLONNE * NB_LIGNE)) {
-    game->courant = NULL;
+    game->courant = NULL; // pour l'affichage en fin de partie
     return true;
   } // égalité
   return false;
 }
 
+/**
+ * @brief Ajoute ou enlève un jeton du type précisé dans la case précisée.
+ *
+ * @param game le jeu
+ * @param ligne le numéro de ligne de la case
+ * @param colonne le numéro de colonne de la case
+ * @param type le type de jeton à ajouter (peut être vide si c'est à enlever)
+ */
 void modifJeton(Puissance4 *game, unsigned ligne, unsigned colonne, Type type) {
   assert(game->courant != NULL);
   assert(ligne >= 0 && ligne < NB_LIGNE);
@@ -76,6 +108,14 @@ void modifJeton(Puissance4 *game, unsigned ligne, unsigned colonne, Type type) {
   game->plateau[ligne][colonne] = type;
 }
 
+/**
+ * @brief Test si la colonne demandée est pleine.
+ *
+ * @param plateau le plateau de jeu
+ * @param c le numéro de colonne
+ * @return int -1 si la colonne est pleine, sinon le numéro de ligne de la
+ * première case libre
+ */
 int testColonne(Plateau plateau, int c) {
   assert(c >= 0 && c < NB_COLONNE);
   for (int i = NB_LIGNE - 1; i >= 0; i--) {
@@ -85,18 +125,25 @@ int testColonne(Plateau plateau, int c) {
   return -1;
 }
 
+/**
+ * @brief Inverser le joueur courant.
+ *
+ * @param game le jeu
+ */
 void changerJoueur(Puissance4 *game) {
   assert(game->courant);
   if (game->courant == game->j2)
     game->courant = game->j1;
-  else if (game->courant == game->j1)
+  else
     game->courant = game->j2;
-  else {
-    perror("Problème inattendu.");
-    exit(EXIT_FAILURE);
-  }
 }
 
+/**
+ * @brief Pour recommencer une partie : le plateau à vide et le nomre de jetons
+ * à 0
+ *
+ * @param game
+ */
 static void reInitGame(Puissance4 *game) {
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
@@ -110,7 +157,7 @@ void launchGame(Puissance4 *game, userInterface *ui) {
   // assert !!
   bool rejouer;
 jouer:
-  game->courant = game->j2;
+  reInitGame(game);
   ui->initAffichage(ui->data, game);
   do {
     changerJoueur(game);
@@ -127,8 +174,6 @@ jouer:
   rejouer = ui->endAffichage(ui->data, game);
   if (game->rageQuit)
     return;
-  if (rejouer) {
-    reInitGame(game);
+  if (rejouer)
     goto jouer;
-  }
 }

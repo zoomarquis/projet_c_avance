@@ -36,32 +36,34 @@
 #define NB_ALIGNE 4
 
 /**
- * @enum Type
+ * @enum type_
  * @brief Représente les cases du plateau
  * @typedef Type
+ * @brief Renommer _type.
  */
-typedef enum {
+typedef enum type_{
   VIDE, //!< Représente une case vide
   J1,   //!< Représente une case qui est occupée par J1
   J2    //!< Représente une case qui est occupée par J2
 } Type;
 
 /**
- * \typedef Plateau
+ * @typedef Plateau
  * @brief Un tableau à 2 dimensions de Type
  */
 typedef Type Plateau[NB_LIGNE][NB_COLONNE];
 
 /**
  * @typedef Joueur
- * @brief Renommer joueur_
+ * @brief Renommer un joueur_.
  */
 typedef struct joueur_ Joueur;
 
 /**
  * @struct p4_
  * @brief Représente un jeu du puissance 4.
- * @typedef Puissance4 p4_
+ * @typedef Puissance4
+ * @brief Renommer p4_.
  */
 typedef struct p4_ {
   Joueur *j1;      //<! Pointeur sur J1
@@ -86,7 +88,8 @@ struct joueur_ {
 /**
  * @struct ui_
  * @brief Représente l'interface graphique du jeu.
- * @typedef userInterface ui_
+ * @typedef userInterface
+ * @brief Renommer ui_.
  */
 typedef struct ui_{
   void *data;

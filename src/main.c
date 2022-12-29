@@ -19,22 +19,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Puissance4 *initGame() {
+/**
+ * @brief Crée un jeu du puissance 4.
+ *
+ * @return Puissance4* le jeu, NULL en cas de problème d'allocation
+ */
+static Puissance4 *initGame() {
   Puissance4 *game = malloc(sizeof(Puissance4));
   if (!game) {
     perror("Problème d'allocation dans initGame.");
     return NULL;
   }
-  for (int i = 0; i < NB_LIGNE; i++) {
-    for (int j = 0; j < NB_COLONNE; j++) {
-      game->plateau[i][j] = VIDE;
-    }
-  } // init plateau
   game->rageQuit = false;
-  game->nb_jetons = 0;
   return game;
 }
 
+/**
+ * @brief Supprime tout ce qui a été alloué pour le jeu du puissance 4.
+ *
+ * @param game le jeu
+ * @param ui l'interface graphique
+ */
 static void clean(Puissance4 *game, userInterface *ui) {
   free(game->j1);
   free(game->j2);
@@ -44,6 +49,12 @@ static void clean(Puissance4 *game, userInterface *ui) {
   free(game);
 }
 
+/**
+ * @brief Fonction principale du jeu du puissance 4.
+ *
+ * @return int EXIT_SUCCESS si tout s'est bien passé, EXIT_FAILURE en cas de
+ * problème
+ */
 int main() {
   char interface, mode, niveau, niveau2;
   printf("\e[1;1H\e[2J");
@@ -84,7 +95,7 @@ int main() {
       goto Quitter;
     }
   } else if (interface == 'g') {
-    ui = makeGraphique();
+    ui = makeGraphique(game);
     if (!ui)
       goto Quitter;
 

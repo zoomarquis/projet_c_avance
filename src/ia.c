@@ -27,7 +27,8 @@
 /**
  * @struct couple_
  * @brief Un couple indice de la colonne et sa valeur associée.
- * @typedef Couple couple_
+ * @typedef Couple
+ * @brief Renommer un couple_.
  */
 typedef struct couple_ {
   int indice; //!< indice de la colonne

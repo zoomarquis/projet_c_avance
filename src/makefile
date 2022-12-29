@@ -3,6 +3,6 @@ make : *.c
 	gcc -o exec *.o -L../lib -lSDL2
 	valgrind ./exec
 
-clean : *.o exec
+clean : *.o
 	rm -rf *.o exec
 
