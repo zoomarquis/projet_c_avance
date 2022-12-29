@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
  * @def WIDTH
@@ -100,9 +101,9 @@ static void destroyData(void *data){
  * @return int valeur de retour obligatoire mais inutile pour nous (utile pour la SDL)
  */
 static int EventQuit(void *userdata, SDL_Event *event) {
-  bool *rQ = (bool *)userdata;
+  Puissance4 *game = (Puissance4 *)userdata;
   if (event->type == SDL_QUIT) {
-    *rQ = true;
+    game->rageQuit = true;
   }
   return 0;
 }
@@ -295,9 +296,29 @@ static int creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
   return 0;
 }
 
-static bool endAffichage();
+static bool endAffichage(void *data, Puissance4 *game){
+  SDLData *d = (SDLData *)data;
+  TTF_Font* Sans = TTF_OpenFont("Sans.ttf", 24);
+  SDL_Color noir = {0, 0, 0};
 
-userInterface *makeGraphique() {
+  if (!game->courant){
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "Egalité !", noir);
+    SDL_Texture* Message = SDL_CreateTextureFromSurface(d->renderer, surfaceMessage);
+    SDL_Rect Message_rect = {0, 0, 100, 100};
+    SDL_RenderCopy(d->renderer, Message, NULL, &Message_rect);
+    //SDL_FreeSurface(surfaceMessage);
+    //SDL_DestroyTexture(Message);
+  }else{
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "oscour !", noir);
+    SDL_Texture* Message = SDL_CreateTextureFromSurface(d->renderer, surfaceMessage);
+    SDL_Rect Message_rect = {0, 0, 100, 100};
+    SDL_RenderCopy(d->renderer, Message, NULL, &Message_rect);
+    //SDL_FreeSurface(surfaceMessage);
+    //SDL_DestroyTexture(Message);
+  }
+}
+
+userInterface *makeGraphique(Puissance4* game) {
   SDL_Window *window = NULL;
   SDL_Renderer *renderer = NULL;
   userInterface *ui = malloc(sizeof(userInterface));
@@ -331,15 +352,14 @@ userInterface *makeGraphique() {
     return NULL;
   }
 
-  SDL_AddEventWatch(EventQuit, d);
+  SDL_AddEventWatch(EventQuit, game);
 
   ui->data = d;
-  ui->rageQuit = false;
   ui->initAffichage = initPlateauGraphique;
   ui->affichage = updateGraphique;
   ui->getProchainCoup = prochainCoup;
   ui->destroy = destroyData;
-  ui->endAffichage = NULL;
+  ui->endAffichage = endAffichage;
 
   return ui;
 }
