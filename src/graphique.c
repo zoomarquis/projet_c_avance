@@ -98,7 +98,6 @@ static void destroyData(void *data){
 /**
  * @brief Permet au joueur humain de jouer un pion.
  *
- * @param userdata Pointeur le booleen ragequit
  * @param game le jeu
  * 
  * @return unsigned la colonne où le joueur place un pion
@@ -110,7 +109,7 @@ static unsigned playHumainGraphique(Puissance4 *game) {
   assert(game->courant);
   SDL_Event event;
   SDL_bool joue = SDL_FALSE;
-  while (!joue || game->rageQuit) {
+  while (!joue) {
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
       game->rageQuit = true;
@@ -126,29 +125,7 @@ static unsigned playHumainGraphique(Puissance4 *game) {
   return coup;
 }
 
-/**
- * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
- * (humain ou IA).
- *
- * @param game le jeu
- */
-static void prochainCoup(Puissance4 *game) {
-  assert(game->courant);
-  unsigned coup = game->courant->play(game);
-  game->colonne = coup;
-  game->ligne = testColonne(game->plateau, coup);
-  assert(game->ligne != -1);
-}
 
-
-/**
- * @brief Perme.
- *
- * @param userdata Pointeur le booleen ragequit
- * @param game le jeu
- * 
- * @return unsigned la colonne où le joueur place un pion
- */
 static int initialise_plateau(SDL_Renderer *renderer) {
   // Couleur de fenetre blanche
   SDL_Color blanc = {255, 255, 255, 255};
