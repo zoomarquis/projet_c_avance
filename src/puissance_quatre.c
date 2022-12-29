@@ -155,6 +155,7 @@ static void initGame(Puissance4 *game) {
     }
   }
   game->nb_jetons = 0;
+  game->courant = game->j2;
 }
 
 /**
