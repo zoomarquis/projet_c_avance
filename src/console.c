@@ -55,6 +55,7 @@ static void printCase(Type v) {
  * @param game le jeu
  */
 static void printPlateau(void *data, Puissance4 *game) {
+  assert(game);
   printf("\e[1;1H\e[2J");
   unsigned c, l;
   for (c = 0; c < NB_COLONNE; c++)
@@ -90,6 +91,7 @@ static void clearBuffer() {
  */
 static unsigned playHumainConsole(Puissance4 *game) {
   int coup;
+  assert(game);
   assert(game->courant);
   (game->courant->type == J1) ? (printf("Joueur 1 (X) :"))
                               : (printf("Joueur 2 (O) :"));
@@ -115,6 +117,7 @@ static unsigned playHumainConsole(Puissance4 *game) {
  * @param game le jeu
  */
 static void prochainCoup(Puissance4 *game) {
+  assert(game);
   assert(game->courant);
   unsigned coup = game->courant->play(game);
   game->colonne = coup;
@@ -132,6 +135,7 @@ static void prochainCoup(Puissance4 *game) {
  * @return false si l'utilisateur veut arrêter
  */
 static bool finDePartie(void *data, Puissance4 *game) {
+  assert(game);
   if (!game->courant)
     printf("Égalité !\n");
   else
@@ -184,6 +188,7 @@ userInterface *makeConsole() {
  * NULL en cas de problème d'allocation
  */
 Joueur *makeHumainConsole(Type t) {
+  assert(t != VIDE);
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {
     perror("Problème d'allocation dans makeHumainConsole.");

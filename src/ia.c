@@ -65,7 +65,8 @@ static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
  * @return unsigned le score de la case
  */
 static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
-  // assert ?
+  assert(ligne >= 0 && ligne < NB_LIGNE);
+  assert(colonne >= 0 && colonne < NB_COLONNE);
   unsigned som = 0;
   som += valeurCase(game, ligne - 1, colonne - 1);
   som += valeurCase(game, ligne - 1, colonne);
@@ -85,7 +86,6 @@ static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
  * @return unsigned le score du joueur
  */
 static unsigned scoreJoueur(Puissance4 game) {
-  // assert
   assert(game.courant->type != VIDE);
   unsigned som = 0;
   for (int i = 0; i < NB_LIGNE; i++) {
@@ -107,6 +107,7 @@ static unsigned scoreJoueur(Puissance4 game) {
  * @return int la valeur associée pour un joueur au plateau
  */
 static int evaluation(Puissance4 *game) {
+  assert(game);
   int val;
   changerJoueur(game);
   val = scoreJoueur(*game);
@@ -125,16 +126,18 @@ static int evaluation(Puissance4 *game) {
  * du meilleur coup et la valeur du meilleur coup
  */
 static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
+  assert(game);
+  assert(colonne == -1 || (colonne >= 0 && colonne < NB_COLONNE));
   Couple res;
   int ligne;
   int bestColonne = -1;
   int bestValeur = MAX + 1;
-  if (colonne != -1) { // premier appel : pas encore joué
+  if (colonne != -1) { // premier appel : pas encore de coup joué
     ligne = testColonne(game->plateau, colonne);
     ligne++; // le coup qu'on vient de jouer
     Joueur *tmp = game->courant;
     if (testEnd(game, ligne, colonne)) {
-      if (!game->courant) { // egalite
+      if (!game->courant) { // égalité
         game->courant = tmp;
         return (Couple){colonne, 0};
       }
@@ -142,13 +145,13 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
     }
   }
 
-  if (profondeur == 0) {
+  if (profondeur == 0) { // fin de la recherche en profondeur
     return (Couple){colonne, evaluation(game)};
   }
 
   for (int i = 0; i < NB_COLONNE; i++) {
     ligne = testColonne(game->plateau, i);
-    if (ligne != -1) {
+    if (ligne != -1) { // on peut jouer dans cette colonne
       modifJeton(game, ligne, i, game->courant->type); // do
       changerJoueur(game);
       res = minimax(game, profondeur - 1, i);
@@ -161,7 +164,6 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
       modifJeton(game, ligne, i, VIDE); // undo
     }
   }
-
   return (Couple){bestColonne, bestValeur};
 }
 
@@ -172,6 +174,7 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
  * @return unsigned la colonne où l'IA place un pion
  */
 static unsigned playIA(Puissance4 *game) {
+  assert(game);
   Couple res = minimax(game, game->courant->profondeur, -1);
   assert(res.indice >= 0 && res.indice < NB_COLONNE);
   return (unsigned)res.indice;
@@ -185,6 +188,7 @@ static unsigned playIA(Puissance4 *game) {
  * @return Joueur* un pointeur sur le Joueur créé
  */
 Joueur *makeIA(Type t, char niveau) {
+  assert(t != VIDE);
   assert(niveau == '1' || niveau == '2' || niveau == '3');
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {

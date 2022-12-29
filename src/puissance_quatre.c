@@ -139,12 +139,12 @@ void changerJoueur(Puissance4 *game) {
 }
 
 /**
- * @brief Pour recommencer une partie : le plateau à vide et le nomre de jetons
+ * @brief Pour recommencer une partie : le plateau à vide et le nombre de jetons
  * à 0
  *
- * @param game
+ * @param game le jeu
  */
-static void reInitGame(Puissance4 *game) {
+static void initGame(Puissance4 *game) {
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
       game->plateau[i][j] = VIDE;
@@ -153,11 +153,19 @@ static void reInitGame(Puissance4 *game) {
   game->nb_jetons = 0;
 }
 
+/**
+ * @brief Lance une partie, tant qu'elle n'est pas terminée, permet de jouer.
+ * Lorsque la partie se termine, permet de relancer une nouvelle partie. Gère
+ * aussi les rageQuit (fermeture de la fenetre en mode interface graphique)
+ *
+ * @param game le jeu
+ * @param ui l'interface graphique
+ */
 void launchGame(Puissance4 *game, userInterface *ui) {
   // assert !!
   bool rejouer;
 jouer:
-  reInitGame(game);
+  initGame(game);
   ui->initAffichage(ui->data, game);
   do {
     changerJoueur(game);

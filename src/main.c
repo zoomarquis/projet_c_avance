@@ -24,7 +24,7 @@
  *
  * @return Puissance4* le jeu, NULL en cas de problème d'allocation
  */
-static Puissance4 *initGame() {
+static Puissance4 *initPuissance4() {
   Puissance4 *game = malloc(sizeof(Puissance4));
   if (!game) {
     perror("Problème d'allocation dans initGame.");
@@ -69,7 +69,7 @@ int main() {
   }
 
   userInterface *ui;
-  Puissance4 *game = initGame();
+  Puissance4 *game = initPuissance4();
   if (!game)
     goto Quitter;
 
