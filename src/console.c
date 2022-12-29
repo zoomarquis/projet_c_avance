@@ -112,22 +112,6 @@ static unsigned playHumainConsole(Puissance4 *game) {
 }
 
 /**
- * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
- * (humain ou IA).
- *
- * @param game le jeu
- */
-static void prochainCoup(Puissance4 *game) {
-  assert(game);
-  assert(game->courant);
-  unsigned coup = game->courant->play(game);
-  assert(coup >= 0 && coup < NB_COLONNE);
-  game->colonne = coup;
-  game->ligne = testColonne(game->plateau, coup);
-  assert(game->ligne != -1);
-}
-
-/**
  * @brief Lorsque la partie est terminée, affiche le plateau et dialogue avec
  * l'utilisateur pour savoir si il veut rejouer ou non.
  *
@@ -174,11 +158,11 @@ userInterface *makeConsole() {
     perror("Problème d'allocation dans makeConsole.");
     return NULL;
   }
-  ui->initAffichage = printPlateau;
-  ui->affichage = printPlateau;
-  ui->getProchainCoup = prochainCoup;
-  ui->endAffichage = finDePartie;
-  ui->destroy = destruction;
+  ui->initAffichage = &printPlateau;
+  ui->affichage = &printPlateau;
+  ui->getProchainCoup = &prochainCoup;
+  ui->endAffichage = &finDePartie;
+  ui->destroy = &destruction;
   return ui;
 }
 
