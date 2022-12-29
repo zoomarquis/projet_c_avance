@@ -135,6 +135,7 @@ static Couple minimax(Puissance4 *game, unsigned profondeur, int colonne) {
   if (colonne != -1) { // premier appel : pas encore de coup joué
     ligne = testColonne(game->plateau, colonne);
     ligne++; // le coup qu'on vient de jouer
+    assert(ligne >= 0 && ligne < NB_LIGNE);
     Joueur *tmp = game->courant;
     if (testEnd(game, ligne, colonne)) {
       if (!game->courant) { // égalité

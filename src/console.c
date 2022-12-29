@@ -120,6 +120,7 @@ static void prochainCoup(Puissance4 *game) {
   assert(game);
   assert(game->courant);
   unsigned coup = game->courant->play(game);
+  assert(coup >= 0 && coup < NB_COLONNE);
   game->colonne = coup;
   game->ligne = testColonne(game->plateau, coup);
   assert(game->ligne != -1);

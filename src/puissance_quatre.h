@@ -101,7 +101,7 @@ typedef struct ui_{
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);
-int testColonne(Plateau, int);
+int testColonne(Plateau, unsigned);
 void modifJeton(Puissance4 *, unsigned, unsigned, Type);
 void changerJoueur(Puissance4 *);
 void launchGame(Puissance4 *, userInterface *);

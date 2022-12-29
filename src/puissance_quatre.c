@@ -118,7 +118,7 @@ void modifJeton(Puissance4 *game, unsigned ligne, unsigned colonne, Type type) {
  * @return int -1 si la colonne est pleine, sinon le numéro de ligne de la
  * première case libre
  */
-int testColonne(Plateau plateau, int c) {
+int testColonne(Plateau plateau, unsigned c) {
   assert(c >= 0 && c < NB_COLONNE);
   for (int i = NB_LIGNE - 1; i >= 0; i--) {
     if (plateau[i][c] == VIDE)
