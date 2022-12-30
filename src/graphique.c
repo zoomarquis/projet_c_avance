@@ -68,17 +68,19 @@ static int setRendererColor(SDL_Renderer *renderer, SDL_Color color) {
  */
 static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
                        SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE]) {
+  if (NULL != tab_texture) {
+    for (int i = 0; i < NB_LIGNE; i++) {
+      for (int j = 0; j < NB_COLONNE; j++) {
+        if(tab_texture[i][j] != NULL)
+          SDL_DestroyTexture(tab_texture[i][j]);
+      }
+    }
+  }
   if (NULL != renderer)
     SDL_DestroyRenderer(renderer);
   if (NULL != window)
     SDL_DestroyWindow(window);
-  if (NULL != tab_texture) {
-    for (int i = 0; i < NB_LIGNE; i++) {
-      for (int j = 0; j < NB_COLONNE; j++) {
-        SDL_DestroyTexture(tab_texture[i][j]);
-      }
-    }
-  }
+  
   SDL_Quit();
 }
 
@@ -89,15 +91,14 @@ static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
  */
 static void destroyData(void *data) {
   SDLData *d = (SDLData *)data;
-  destroySDL(d->window, d->renderer, d->tab_texture);
+  destroySDL(d->window, d->renderer, (d->tab_texture));
   free(d);
 }
 
 /**
- * @brief Permet au joueur humain de jouer un pion.
+ * @brief Permet au joueur humain en mode graphique de jouer un pion.
  *
  * @param game le jeu
- *
  * @return unsigned la colonne où le joueur place un pion
  */
 static unsigned playHumainGraphique(Puissance4 *game) {
@@ -123,6 +124,13 @@ static unsigned playHumainGraphique(Puissance4 *game) {
   return coup;
 }
 
+
+/**
+ * @brief Permet de mettre la fenetre en blanc
+ *
+ * @param renderer Pointeur sur le renderer
+ * @return int 0 si le changement a ete effectue -1 sinon
+ */
 static int initialise_plateau(SDL_Renderer *renderer) {
   // Couleur de fenetre blanche
   SDL_Color blanc = {255, 255, 255, 255};
@@ -134,6 +142,16 @@ static int initialise_plateau(SDL_Renderer *renderer) {
   return 0;
 }
 
+
+/**
+ * @brief Permet d'initialiser la SDL, notre fenetre et notre renderer
+ *
+ * @param window Le pointeur sur la fenêtre qui va être créee
+ * @param renderer Le pointeur sur le renderer qui va être crée
+ * @param w La largeur de la fenêtre
+ * @param h La hauteur de la fenêtre
+ * @return int 0 si tout s'est bien passé, -1 sinon
+ */
 static int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h) {
   // Initialisation SDL
   if (0 != SDL_Init(SDL_INIT_VIDEO)) {
@@ -162,6 +180,16 @@ static int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h) {
   return 0;
 }
 
+/**
+ * @brief Permet de dessiner un cercle
+ *
+ * @param renderer Le pointeur sur le renderer qui va être crée
+ * @param x Centre du cercle en abscisse
+ * @param y Centre du cercle en ordonnée
+ * @param radius Le rayon du cercle
+ * @param color La couleur du cercle
+ * @return int 0 si tout s'est bien passé, -1 sinon
+ */
 static int draw_circle(SDL_Renderer *renderer, int x, int y, int radius,
                        SDL_Color color) {
   int status = 0;
@@ -183,6 +211,12 @@ static int draw_circle(SDL_Renderer *renderer, int x, int y, int radius,
   return status;
 }
 
+/**
+ * @brief Permet de mettre a jour la fenêtre lorsqu'un coup est joué
+ *
+ * @param data Le pointeur sur la data de la SDL (window, renderer, tab_texture)
+ * @param game Le pointeur sur le jeu
+ */
 static void updateGraphique(void *data, Puissance4 *game) {
   SDLData *d = (SDLData *)data;
   int grid_cell_width = (WIDTH / NB_COLONNE) - PAS;
@@ -217,6 +251,12 @@ static void updateGraphique(void *data, Puissance4 *game) {
   SDL_Delay(300);
 }
 
+/**
+ * @brief Permet de faire le quadrillage 6x7 de la fenêtre
+ *
+ * @param data Le pointeur sur la data de la SDL (window, renderer, tab_texture)
+ * @param game Le pointeur sur le jeu
+ */
 static void initPlateauGraphique(void *data, Puissance4 *game) {
   // afficher le plateau
   SDLData *d = (SDLData *)data;
@@ -241,17 +281,25 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
   SDL_RenderPresent(d->renderer);
 }
 
+
+/**
+ * @brief Permet de creer le tableau de textures
+ *
+ * @param d Le pointeur sur la data de la SDL (window, renderer, tab_texture)
+ * @param renderer Le pointeur sur le renderer
+ * 
+ * @return int 0 si tout s'est bien passé, -1 sinon
+ */
 static int creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
-      d->tab_texture[i][j] =
-          SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-                            SDL_TEXTUREACCESS_TARGET, 500, 500);
+      d->tab_texture[i][j] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 500, 500);
       if (NULL == d->tab_texture[i][j]) {
         fprintf(stderr, "Erreur SDL_CreateTexture : %s", SDL_GetError());
         for (int k = 0; k <= i; k++) {
           for (int l = 0; l < j; l++) {
             SDL_DestroyTexture(d->tab_texture[k][l]);
+            d->tab_texture[i][j] = NULL;
           }
         }
         return -1;
@@ -261,25 +309,52 @@ static int creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
   return 0;
 }
 
+
+/**
+ * @brief Permet de faire l'affichage de fin de partie
+ *
+ * @param data Le pointeur sur la data de la SDL (window, renderer, tab_texture)
+ * @param game Le pointeur sur le jeu
+ * 
+ * @return bool false si le joueur ne souhaite pas rejouer, true si il veut rejouer
+ */
 static bool endAffichage(void *data, Puissance4 *game) {
   SDLData *d = (SDLData *)data;
+  SDL_Surface *egalite = NULL;
+  SDL_Surface *gagne = NULL;
+  SDL_Surface *rejouer = NULL;
+  SDL_Texture *egaliteT = NULL;
+  SDL_Texture *gagneT = NULL;
+  SDL_Texture *rejouerT = NULL;
   SDL_Rect rect = {WIDTH - 300, HEIGHT - 500, 250, 100};
-  int test = 0;
 
   if (!game->courant) {
-    SDL_Surface *egalite = SDL_LoadBMP("img/egalite.bmp");
+    egalite = SDL_LoadBMP("img/egalite.bmp");
     if (!egalite) {
-      fprintf(stderr, "Erreur de chargement de la surface : %s",
-              SDL_GetError());
+      fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
       return false;
     }
-    SDL_Texture *egaliteT = SDL_CreateTextureFromSurface(d->renderer, egalite);
+    egaliteT = SDL_CreateTextureFromSurface(d->renderer, egalite);
     if (!egaliteT) {
-      fprintf(stderr, "Erreur de chargement de la texture : %s",
-              SDL_GetError());
+      fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
       SDL_FreeSurface(egalite);
       return false;
     }
+
+    rejouer = SDL_LoadBMP("img/rejouer.bmp");
+    if (!rejouer) {
+      fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+      return false;
+    }
+    rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
+    if (!rejouerT) {
+      fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
+      SDL_FreeSurface(rejouer);
+      return false;
+    }
+
+    SDL_Rect rect2 = {WIDTH - 300, HEIGHT - 200, 250, 100};
+    SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2);
 
     SDL_RenderCopy(d->renderer, egaliteT, NULL, &rect);
     SDL_RenderPresent(d->renderer);
@@ -287,29 +362,25 @@ static bool endAffichage(void *data, Puissance4 *game) {
     // SDL_DestroyTexture(Message);
   } else {
     if (game->courant->type == J1) {
-      test = 1;
-      SDL_Surface *gagne = SDL_LoadBMP("img/gagnerouge.bmp");
+      gagne = SDL_LoadBMP("img/gagnerouge.bmp");
       if (!gagne) {
-        fprintf(stderr, "Erreur de chargement de la surface : %s",
-                SDL_GetError());
+        fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
         return false;
       }
-      SDL_Texture *gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
+      gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
       if (!gagneT) {
-        fprintf(stderr, "Erreur de chargement de la texture : %s",
-                SDL_GetError());
+        fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
         SDL_FreeSurface(gagne);
         return false;
       }
       SDL_RenderCopy(d->renderer, gagneT, NULL, &rect);
     } else {
-      test = 2;
-      SDL_Surface *gagne = SDL_LoadBMP("img/gagnejaune.bmp");
+      gagne = SDL_LoadBMP("img/gagnejaune.bmp");
       if (!gagne) {
         printf("Erreur de chargement de l'image : %s", SDL_GetError());
         return -1;
       }
-      SDL_Texture *gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
+      gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
       if (!gagneT) {
         printf("Erreur de chargement de la surface : %s", SDL_GetError());
         SDL_FreeSurface(gagne);
@@ -318,16 +389,14 @@ static bool endAffichage(void *data, Puissance4 *game) {
       SDL_RenderCopy(d->renderer, gagneT, NULL, &rect);
     }
 
-    SDL_Surface *rejouer = SDL_LoadBMP("img/rejouer.bmp");
+    rejouer = SDL_LoadBMP("img/rejouer.bmp");
     if (!rejouer) {
-      fprintf(stderr, "Erreur de chargement de la surface : %s",
-              SDL_GetError());
+      fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
       return false;
     }
-    SDL_Texture *rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
+    rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
     if (!rejouerT) {
-      fprintf(stderr, "Erreur de chargement de la texture : %s",
-              SDL_GetError());
+      fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
       SDL_FreeSurface(rejouer);
       return false;
     }
@@ -335,23 +404,71 @@ static bool endAffichage(void *data, Puissance4 *game) {
     SDL_Rect rect2 = {WIDTH - 300, HEIGHT - 200, 250, 100};
     SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2);
     SDL_RenderPresent(d->renderer);
+  }
+  SDL_Event event;
+  SDL_bool action = SDL_FALSE;
+  while (!action) {
+    SDL_WaitEvent(&event);
+    if (event.type == SDL_QUIT) {
+      action = SDL_TRUE;
+      if(egalite){
+        SDL_FreeSurface(egalite);
+        SDL_DestroyTexture(egaliteT);
+        egalite = NULL;
+        egaliteT = NULL;
+      }
+      if(gagne){
+        SDL_FreeSurface(gagne);
+        SDL_DestroyTexture(gagneT);
+        gagne = NULL;
+        gagneT = NULL;
+      }
+      if(rejouer){
+        SDL_FreeSurface(rejouer);
+        SDL_DestroyTexture(rejouerT);
+        rejouer = NULL;
+        rejouerT = NULL;
+      }
+      // Free les surfaces et textures créées au dessus
+      return false;
+    }
 
-    SDL_Event event;
-    SDL_bool action = SDL_FALSE;
-    while (!action) {
-      SDL_WaitEvent(&event);
-      if (event.type == SDL_QUIT) {
-        // Free les surfaces et textures créées au dessus
-        return false;
+    if(event.type == SDL_MOUSEBUTTONUP){
+      //Hitbox du bouton rejouer
+      if((event.button.x >= WIDTH-300 && event.button.x <= WIDTH-50) && (event.button.y >= HEIGHT-200 && event.button.y <= HEIGHT-100)){
+        action = SDL_TRUE;
+        if(egalite){
+          SDL_FreeSurface(egalite);
+          SDL_DestroyTexture(egaliteT);
+          egalite = NULL;
+          egaliteT = NULL;
+        }
+        if(gagne){
+          SDL_FreeSurface(gagne);
+          SDL_DestroyTexture(gagneT);
+          gagne = NULL;
+          gagneT = NULL;
+        }
+        if(rejouer){
+          SDL_FreeSurface(rejouer);
+          SDL_DestroyTexture(rejouerT);
+          rejouer = NULL;
+          rejouerT = NULL;
+        }
+        return true;
       }
     }
-    // SDL_FreeSurface(surfaceMessage);
-    // SDL_DestroyTexture(Message);
   }
   return false;
 }
 
-userInterface *makeGraphique(Puissance4 *game) {
+/**
+ * @brief Crée une interface en mode graphique.
+ *
+ * @return userInterface* un pointeur sur l'inferface créée,
+ * NULL en cas de problème d'allocation
+ */
+userInterface *makeGraphique() {
   SDL_Window *window = NULL;
   SDL_Renderer *renderer = NULL;
   userInterface *ui = malloc(sizeof(userInterface));
@@ -395,13 +512,21 @@ userInterface *makeGraphique(Puissance4 *game) {
   return ui;
 }
 
-Joueur *makeHumainGraphique(Type c) {
+/**
+ * @brief Crée un joueur humain en mode graphique.
+ *
+ * @param t le type du Joueur
+ * @return Joueur* un pointeur sur le Joueur créé,
+ * NULL en cas de problème d'allocation
+ */
+Joueur *makeHumainGraphique(Type t) {
+  assert(t != VIDE);
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {
-    perror("Problème d'allocation.");
-    exit(EXIT_FAILURE);
+    perror("Problème d'allocation dans makeHumainConsole.");
+    return NULL;
   }
-  j->type = c;
+  j->type = t;
   j->play = &playHumainGraphique;
   return j;
 }
