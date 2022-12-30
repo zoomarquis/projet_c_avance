@@ -159,6 +159,22 @@ static void initGame(Puissance4 *game) {
 }
 
 /**
+ * @brief Récupère le prochain coup à jouer, sans tenir compte du type du joueur
+ * (humain ou IA).
+ *
+ * @param game le jeu
+ */
+void prochainCoup(Puissance4 *game) {
+  assert(game);
+  assert(game->courant);
+  unsigned coup = game->courant->play(game);
+  assert(coup >= 0 && coup < NB_COLONNE);
+  game->colonne = coup;
+  game->ligne = testColonne(game->plateau, coup);
+  assert(game->ligne != -1);
+}
+
+/**
  * @brief Lance une partie, tant qu'elle n'est pas terminée, permet de jouer.
  * Lorsque la partie se termine, permet de relancer une nouvelle partie. Gère
  * aussi les rageQuit (fermeture de la fenetre en mode interface graphique)

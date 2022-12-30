@@ -30,7 +30,7 @@
 /**
  * @def NB_ALIGNE
  * @brief nombre de pions alignés pour gagner
-*/
+ */
 #define NB_LIGNE 6
 #define NB_COLONNE 7
 #define NB_ALIGNE 4
@@ -41,7 +41,7 @@
  * @typedef Type
  * @brief Renommer type_.
  */
-typedef enum type_{
+typedef enum type_ {
   VIDE, //!< Représente une case vide
   J1,   //!< Représente une case qui est occupée par J1
   J2    //!< Représente une case qui est occupée par J2
@@ -66,14 +66,15 @@ typedef struct joueur_ Joueur;
  * @brief Renommer p4_.
  */
 typedef struct p4_ {
-  Joueur *j1;      //!< Pointeur sur J1
-  Joueur *j2;      //!< Pointeur sur J2
-  Joueur *courant; //!< Pointeur sur le joueur courant, si NULL : partie terminée et égalité
-  Plateau plateau; //!< Le plateau (tableau de cases)
-  unsigned ligne; //!< coordonnée du dernier coup : sa ligne
-  unsigned colonne; //!< coordonnée du dernier coup : sa colonne
+  Joueur *j1;         //!< Pointeur sur J1
+  Joueur *j2;         //!< Pointeur sur J2
+  Joueur *courant;    //!< Pointeur sur le joueur courant, si NULL : partie
+                      //!< terminée et égalité
+  Plateau plateau;    //!< Le plateau (tableau de cases)
+  unsigned ligne;     //!< coordonnée du dernier coup : sa ligne
+  unsigned colonne;   //!< coordonnée du dernier coup : sa colonne
   unsigned nb_jetons; //!< Nombre de jetons sur le plateau
-  bool rageQuit; //!< Booléen en cas de rage quit en mode graphique
+  bool rageQuit;      //!< Booléen en cas de rage quit en mode graphique
 } Puissance4;
 
 /**
@@ -81,9 +82,11 @@ typedef struct p4_ {
  * @brief Représente un joueur.
  */
 struct joueur_ {
-  Type type; //!< Pour savoir si le joueur est un J1 ou un J2
-  unsigned char profondeur; //!< Si le joueur est une IA, correspond à son niveau de difficulté
-  unsigned (*play)(Puissance4 *); //!< Pointeur de fonction : jouer, récupérer le coup souhaité.
+  Type type;                //!< Pour savoir si le joueur est un J1 ou un J2
+  unsigned char profondeur; //!< Si le joueur est une IA, correspond à son
+                            //!< niveau de difficulté
+  unsigned (*play)(Puissance4 *); //!< Pointeur de fonction : jouer, récupérer
+                                  //!< le coup souhaité.
 };
 
 /**
@@ -92,19 +95,30 @@ struct joueur_ {
  * @typedef userInterface
  * @brief Renommer ui_.
  */
-typedef struct ui_{
+typedef struct ui_ {
   void *data; //!< Void * pour faire de la généricité
-  void (*initAffichage)(void *data, Puissance4 *game); //!< Pointeur de fonction : affiche le plateau en début de partie
-  void (*affichage)(void *data, Puissance4 *game); //!< Pointeur de fonction : met à jour l'affichage du plateau
-  void (*getProchainCoup)(Puissance4 *game);//!< Pointeur de fonction : récupère le prochain coup du joueur courant
-  bool (*endAffichage)(void * data, Puissance4 *game);//!< Pointeur de fonction : affiche le jeu une fois la partie terminée, propose de rejouer
-  void (*destroy)(void *data);//!< Pointeur de fonction : détruit l'interface 
+  void (*initAffichage)(void *data,
+                        Puissance4 *game); //!< Pointeur de fonction : affiche
+                                           //!< le plateau en début de partie
+  void (*affichage)(void *data,
+                    Puissance4 *game); //!< Pointeur de fonction : met à jour
+                                       //!< l'affichage du plateau
+  void (*getProchainCoup)(
+      Puissance4 *game); //!< Pointeur de fonction : récupère le prochain coup
+                         //!< du joueur courant
+  bool (*endAffichage)(
+      void *data,
+      Puissance4 *game); //!< Pointeur de fonction : affiche le jeu une fois la
+                         //!< partie terminée, propose de rejouer
+  void (*destroy)(void *data); //!< Pointeur de fonction : détruit l'interface
 } userInterface;
 
 bool testEnd(Puissance4 *, unsigned, unsigned);
 int testColonne(Plateau, unsigned);
 void modifJeton(Puissance4 *, unsigned, unsigned, Type);
+void prochainCoup(Puissance4 *game);
 void changerJoueur(Puissance4 *);
+
 void launchGame(Puissance4 *, userInterface *);
 
 #endif
