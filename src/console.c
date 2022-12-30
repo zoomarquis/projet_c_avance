@@ -95,7 +95,6 @@ static unsigned playHumainConsole(Puissance4 *game) {
   assert(game->courant);
   (game->courant->type == J1) ? (printf("Joueur 1 (X): "))
                               : (printf("Joueur 2 (O): "));
-  clearBuffer();
   scanf("%d", &coup); // transfo en getchar ?
   while (coup < 1 || coup > NB_COLONNE ||
          testColonne(game->plateau, coup - 1) == -1) {
