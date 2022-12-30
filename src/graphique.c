@@ -27,6 +27,10 @@
  * @def HEIGHT
  * @brief Hauteur de la fenêtre
  */
+/**
+ * @def PAS
+ * @brief La quantité de pixels deduite de la largeur de chaque case du tableau pour pouvoir avec un espace a droite du plateau dans la fenêtre
+ */
 #define WIDTH 1500
 #define HEIGHT 900
 #define PAS 50
@@ -34,13 +38,13 @@
 /**
  * @struct _SDLData
  * @brief Contient les éléments principaux de l'interface graphique
- * @typedef SDLData _SDLData
+ * @typedef SDLData
+ * @brief Renommer _SDLData
  */
 typedef struct _SDLData {
-  SDL_Renderer *renderer;                         //<! Pointeur sur le renderer
-  SDL_Window *window;                             //<! Pointeur sur la fenêtre
-  SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE]; //<! Pointeur sur le tableau
-                                                  // des textures
+  SDL_Renderer *renderer;                         //!< Pointeur sur le renderer
+  SDL_Window *window;                             //!< Pointeur sur la fenêtre
+  SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE]; //!< Pointeur sur le tableau des textures
 } SDLData;
 
 /**
