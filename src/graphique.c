@@ -108,7 +108,7 @@ static void destroyData(void *data) {
 static unsigned playHumainGraphique(Puissance4 *game) {
   int coup = 0;
   int grid_cell_width = (WIDTH / NB_COLONNE) - PAS;
-  int width_plateau = WIDTH - (PAS * NB_COLONNE);
+  int width_plateau = (grid_cell_width * NB_COLONNE);
   assert(game->courant);
   SDL_Event event;
   SDL_bool joue = SDL_FALSE;
@@ -118,7 +118,7 @@ static unsigned playHumainGraphique(Puissance4 *game) {
       game->rageQuit = true;
       return coup;
     }
-    if (event.type == SDL_MOUSEBUTTONUP && event.button.x <= width_plateau) {
+    if (event.type == SDL_MOUSEBUTTONUP && event.button.x < width_plateau) {
       coup = (event.button.x) / (grid_cell_width);
       if (testColonne(game->plateau, coup) != -1) {
         joue = SDL_TRUE;
@@ -348,12 +348,16 @@ static bool endAffichage(void *data, Puissance4 *game) {
     rejouer = SDL_LoadBMP("img/rejouer.bmp");
     if (!rejouer) {
       fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+      SDL_FreeSurface(egalite);
+      SDL_DestroyTexture(egaliteT);
       return false;
     }
     rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
     if (!rejouerT) {
       fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
       SDL_FreeSurface(rejouer);
+      SDL_FreeSurface(egalite);
+      SDL_DestroyTexture(egaliteT);
       return false;
     }
 
@@ -396,11 +400,15 @@ static bool endAffichage(void *data, Puissance4 *game) {
     rejouer = SDL_LoadBMP("img/rejouer.bmp");
     if (!rejouer) {
       fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+      SDL_FreeSurface(gagne);
+      SDL_DestroyTexture(gagneT);
       return false;
     }
     rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
     if (!rejouerT) {
       fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
+      SDL_FreeSurface(gagne);
+      SDL_DestroyTexture(gagneT);
       SDL_FreeSurface(rejouer);
       return false;
     }
