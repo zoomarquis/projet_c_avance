@@ -114,11 +114,13 @@ typedef struct ui_ {
       void *data); /*!< Pointeur de fonction : détruit l'interface */
 } userInterface;
 
+bool testAlign(Plateau, unsigned, unsigned, int, int);
 bool testEnd(Puissance4 *, unsigned, unsigned);
-int testColonne(Plateau, unsigned);
 void modifJeton(Puissance4 *, unsigned, unsigned, Type);
-void prochainCoup(Puissance4 *game);
+int testColonne(Plateau, unsigned);
 void changerJoueur(Puissance4 *);
+void initGame(Puissance4 *);
+void prochainCoup(Puissance4 *);
 void launchGame(Puissance4 *, userInterface *);
 Puissance4 *initPuissance4();
 void clean(Puissance4 *, userInterface *);
