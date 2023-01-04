@@ -2,9 +2,9 @@ CC := gcc
 SRC_DIR ?= src
 OBJ_DIR ?= obj
 TEST_DIR ?= test
-DEBUG ?= 1
+DEBUG ?= 0
 
-ifeq '$ ( DEBUG ) ' '1 '
+ifeq '$(DEBUG)' '1'
 CFLAGS ?= -Wall -MMD -g
 else
 CFLAGS ?= -Wall -MMD -O3 -DNDEBUG
@@ -37,7 +37,7 @@ createRep:
 $(TARGET): createRep $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-$(TARGET_TEST): clean createRep $(OBJS) $(OBJS_TEST)
+$(TARGET_TEST): clean createRep $(OBJS) $(OBJS_TEST) docu
 	$(CC) -o $(TARGET_TEST) $(filter-out $(OBJ_DIR)/$(SRC_DIR)/main.o, $(OBJS)) $(OBJS_TEST) $(LDFLAGS)
 	@./$(TARGET_TEST)
 

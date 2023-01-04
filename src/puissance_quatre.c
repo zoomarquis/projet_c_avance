@@ -31,8 +31,8 @@
  * gagner (puissance 4 = 4)
  * @return false sinon
  */
-static bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne,
-                      int deplaL, int deplaC) {
+bool testAlign(Plateau plateau, unsigned ligne, unsigned colonne, int deplaL,
+               int deplaC) {
   assert(ligne >= 0 && ligne < NB_LIGNE);
   assert(colonne >= 0 && colonne < NB_COLONNE);
   assert(deplaL == 1 || deplaL == -1 || deplaL == 0);
@@ -147,7 +147,7 @@ void changerJoueur(Puissance4 *game) {
  *
  * @param game le jeu
  */
-static void initGame(Puissance4 *game) {
+void initGame(Puissance4 *game) {
   assert(game);
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
