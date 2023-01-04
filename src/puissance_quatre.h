@@ -120,5 +120,7 @@ void modifJeton(Puissance4 *, unsigned, unsigned, Type);
 void prochainCoup(Puissance4 *game);
 void changerJoueur(Puissance4 *);
 void launchGame(Puissance4 *, userInterface *);
+Puissance4 *initPuissance4();
+void clean(Puissance4 *, userInterface *);
 
 #endif

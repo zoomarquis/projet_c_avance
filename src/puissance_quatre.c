@@ -201,3 +201,33 @@ jouer:
   if (rejouer)
     goto jouer;
 }
+
+/**
+ * @brief Crée un jeu du puissance 4.
+ *
+ * @return Puissance4* le jeu, NULL en cas de problème d'allocation
+ */
+Puissance4 *initPuissance4() {
+  Puissance4 *game = malloc(sizeof(Puissance4));
+  if (!game) {
+    perror("Problème d'allocation dans initGame.");
+    return NULL;
+  }
+  game->rageQuit = false;
+  return game;
+}
+
+/**
+ * @brief Supprime tout ce qui a été alloué pour le jeu du puissance 4.
+ *
+ * @param game le jeu
+ * @param ui l'interface graphique
+ */
+void clean(Puissance4 *game, userInterface *ui) {
+  free(game->j1);
+  free(game->j2);
+  if (ui)
+    ui->destroy(ui->data);
+  free(ui);
+  free(game);
+}
