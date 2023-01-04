@@ -88,8 +88,8 @@ void test_alignement1Jeton(void) {
 
 // suite BASIQUE :
 
-// changer joueur
-// test Colonne : moitié et plein
+// changer joueur : j1 à j2 et j2 à j1
+// test Colonne :colonne pleine -> -1
 // test end
 // test align: toutes directions pas fin
 
@@ -114,8 +114,13 @@ static CU_TestInfo test_array_Debut[] = {
     {"ajoute un jeton et test ses alignements", test_alignement1Jeton},
     CU_TEST_INFO_NULL};
 
+static CU_TestInfo test_array_Basique[] = {CU_TEST_INFO_NULL};
+
+static CU_TestInfo test_array_Fin[] = {CU_TEST_INFO_NULL};
+
 static CU_SuiteInfo suites[2] = {{"suiteDebut", initSuiteDebut, cleanSuiteDebut,
                                   NULL, NULL, test_array_Debut},
+                                 //{"suiteMake"}
                                  CU_SUITE_INFO_NULL};
 
 CU_SuiteInfo *getTestZoeSuites() { return suites; }
