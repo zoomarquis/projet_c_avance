@@ -37,7 +37,7 @@ createRep:
 $(TARGET): createRep $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-$(TARGET_TEST): clean createRep $(OBJS) $(OBJS_TEST) docu
+$(TARGET_TEST): clean createRep $(OBJS) $(OBJS_TEST)
 	$(CC) -o $(TARGET_TEST) $(filter-out $(OBJ_DIR)/$(SRC_DIR)/main.o, $(OBJS)) $(OBJS_TEST) $(LDFLAGS)
 	@./$(TARGET_TEST)
 

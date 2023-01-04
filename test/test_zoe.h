@@ -1,5 +1,6 @@
 #ifndef TEST_ZOE_H
 #define TEST_ZOE_H
 #include <CUnit/Basic.h>
-CU_SuiteInfo * getTestZoeSuites();
+CU_SuiteInfo *getTestZoeSuites();
+int cleanSuite();
 #endif

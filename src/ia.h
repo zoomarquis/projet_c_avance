@@ -5,9 +5,9 @@
  * @brief Définition de la fonction de création des IA.
  * @version 1.0
  * @date 2022-12-27
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 
 #ifndef IA_H
@@ -19,6 +19,10 @@
 
 #include "puissance_quatre.h"
 
+unsigned valeurCase(Puissance4, unsigned, unsigned);
+unsigned autour(Puissance4, unsigned, unsigned);
+unsigned scoreJoueur(Puissance4);
+int evaluation(Puissance4 *);
 Joueur *makeIA(Type, char);
 
 #endif

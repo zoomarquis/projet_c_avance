@@ -45,7 +45,7 @@ typedef struct couple_ {
  * @param colonne le numéro de la colonne à évaluer
  * @return unsigned
  */
-static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
+unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
   if (ligne < 0 || ligne >= NB_LIGNE || colonne < 0 || colonne >= NB_COLONNE)
     return 0;
   if (game.plateau[ligne][colonne] == VIDE)
@@ -64,7 +64,7 @@ static unsigned valeurCase(Puissance4 game, unsigned ligne, unsigned colonne) {
  * @param colonne le numéro de colonne de la case
  * @return unsigned le score de la case
  */
-static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
+unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
   assert(ligne >= 0 && ligne < NB_LIGNE);
   assert(colonne >= 0 && colonne < NB_COLONNE);
   unsigned som = 0;
@@ -85,7 +85,7 @@ static unsigned autour(Puissance4 game, unsigned ligne, unsigned colonne) {
  * @param game le jeu
  * @return unsigned le score du joueur
  */
-static unsigned scoreJoueur(Puissance4 game) {
+unsigned scoreJoueur(Puissance4 game) {
   assert(game.courant->type != VIDE);
   unsigned som = 0;
   for (int i = 0; i < NB_LIGNE; i++) {
@@ -106,7 +106,7 @@ static unsigned scoreJoueur(Puissance4 game) {
  * @param game le jeu
  * @return int la valeur associée pour un joueur au plateau
  */
-static int evaluation(Puissance4 *game) {
+int evaluation(Puissance4 *game) {
   assert(game);
   int val;
   changerJoueur(game);

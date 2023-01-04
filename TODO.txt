@@ -2,3 +2,9 @@ rapport : shell
 chmod u + x
 pas posssible de lancer ./exec en dehors ?
 comment compiler + tests 
+
+dans le rapport : expliquer pourquoi les fc plus static -> tests
+
+est ce que des trucs peuvent rester en static ? p4 et ia.
+
+docu ne se genere pas avec les tests

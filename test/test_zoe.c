@@ -8,8 +8,7 @@
 Puissance4 *jeu;
 userInterface *ui;
 
-// suite DEBUT :
-int initSuiteDebut(void) {
+int initSuiteBeginning(void) {
   jeu = initPuissance4();
   if (!jeu)
     return CUE_NOMEMORY;
@@ -23,18 +22,18 @@ int initSuiteDebut(void) {
   jeu->j2->type = J2;
   return CUE_SUCCESS;
 }
-int cleanSuiteDebut(void) {
+int cleanSuite(void) {
   clean(jeu, ui);
   return CUE_SUCCESS;
 }
 
+// suite Beginning :
 void test_initGame(void) {
   CU_ASSERT_PTR_NOT_NULL(jeu);
   initGame(jeu);
   CU_ASSERT_PTR_NOT_NULL(jeu->j1);
   CU_ASSERT_PTR_NOT_NULL(jeu->j2);
   CU_ASSERT_PTR_NOT_NULL(jeu->courant);
-  /*
   CU_ASSERT_PTR_EQUAL(jeu->courant, jeu->j2);
   CU_ASSERT_PTR_NOT_EQUAL(jeu->j1, jeu->j2);
   CU_ASSERT_FALSE(jeu->rageQuit);
@@ -42,7 +41,6 @@ void test_initGame(void) {
   CU_ASSERT_EQUAL(jeu->j1->type, J1);
   CU_ASSERT_EQUAL(jeu->j2->type, J2);
   CU_ASSERT_EQUAL(jeu->courant->type, J2);
-  */
 }
 void test_plateauVide(void) {
   for (int i = 0; i < NB_LIGNE; i++) {
@@ -100,7 +98,7 @@ void test_alignement1Jeton(void) {
 // test align
 // test toutes colonne pleine
 
-static CU_TestInfo test_array_Debut[] = {
+static CU_TestInfo test_array_Beginning[] = {
     {"vérifie que le jeu est bien initialisé", test_initGame},
     {"vérifie que le plateau est bien initialisé", test_plateauVide},
     {"vérifie que les pions descendent tout en bas de la grille",
@@ -114,13 +112,14 @@ static CU_TestInfo test_array_Debut[] = {
     {"ajoute un jeton et test ses alignements", test_alignement1Jeton},
     CU_TEST_INFO_NULL};
 
-static CU_TestInfo test_array_Basique[] = {CU_TEST_INFO_NULL};
+// static CU_TestInfo test_array_Basique[] = {CU_TEST_INFO_NULL};
 
-static CU_TestInfo test_array_Fin[] = {CU_TEST_INFO_NULL};
+// static CU_TestInfo test_array_Fin[] = {CU_TEST_INFO_NULL};
 
-static CU_SuiteInfo suites[2] = {{"suiteDebut", initSuiteDebut, cleanSuiteDebut,
-                                  NULL, NULL, test_array_Debut},
-                                 //{"suiteMake"}
+static CU_SuiteInfo suites[2] = {{"suiteBeginning", initSuiteBeginning,
+                                  cleanSuite, NULL, NULL, test_array_Beginning},
+                                 //{"suiteBasique"}
+
                                  CU_SUITE_INFO_NULL};
 
 CU_SuiteInfo *getTestZoeSuites() { return suites; }
