@@ -1,0 +1,3 @@
+rapport : shell
+chmod u + x
+pas posssible de lancer ./exec en dehors ?

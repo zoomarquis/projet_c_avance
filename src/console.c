@@ -90,21 +90,26 @@ static void clearBuffer() {
  * @return unsigned la colonne où le joueur place un pion
  */
 static unsigned playHumainConsole(Puissance4 *game) {
-  int coup;
+  int coup = -1;
   assert(game);
   assert(game->courant);
   (game->courant->type == J1) ? (printf("Joueur 1 (X): "))
                               : (printf("Joueur 2 (O): "));
-  scanf("%d", &coup); // transfo en getchar ?
+  while (!scanf("%d", &coup)) {
+    printf("Entrée incorrecte. Veuillez réessayer: ");
+    clearBuffer();
+  }
   while (coup < 1 || coup > NB_COLONNE ||
          testColonne(game->plateau, coup - 1) == -1) {
     if (coup < 1 || coup > NB_COLONNE) {
-      printf("Veuillez entrer un numéro de colonne valide, entre %d et %d.\n",
-             1, NB_COLONNE);
+      printf("Veuillez entrer un numéro de colonne valide, entre %d et %d: ", 1,
+             NB_COLONNE);
     } else
       printf("Cette colonne est pleine, veuillez en choisir une autre: ");
-    clearBuffer();
-    scanf("%d", &coup);
+    while (!scanf("%d", &coup)) {
+      printf("Entrée incorrecte. Veuillez réessayer: ");
+      clearBuffer();
+    }
   }
   clearBuffer();
   return coup - 1;
