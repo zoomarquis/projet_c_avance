@@ -25,7 +25,10 @@ TARGET_TEST ?= runTest
 
 .PHONY: clean mrproper
 
-all: createRep $(TARGET)
+all: createRep $(TARGET) docu
+
+docu: doc/Doxyfile
+	doxygen doc/Doxyfile
 
 createRep:
 	@mkdir -p $(OBJ_DIR)/$(SRC_DIR)
@@ -45,7 +48,7 @@ $(OBJ_DIR)/$(TEST_DIR)/%.o: $(TEST_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR) doc/html
 
 mrproper : clean
 	rm -f $(TARGET) $(TARGET_TEST)
