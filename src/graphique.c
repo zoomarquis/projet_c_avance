@@ -45,6 +45,8 @@ typedef struct _SDLData {
   SDL_Renderer *renderer;                         //!< Pointeur sur le renderer
   SDL_Window *window;                             //!< Pointeur sur la fenêtre
   SDL_Texture *tab_texture[NB_LIGNE][NB_COLONNE]; //!< Pointeur sur le tableau des textures
+  SDL_Texture *tour1;                              //!< Pointeur sur l'image pour le tour du joueur 1
+  SDL_Texture *tour2;                              //!< Pointeur sur l'image pour le tour du joueur 2
 } SDLData;
 
 /**
@@ -250,6 +252,21 @@ static void updateGraphique(void *data, Puissance4 *game) {
   case VIDE:
     break;
   }
+  
+  SDL_Rect rectTour = {WIDTH-270, HEIGHT-850, 200, 200};
+  switch (game->courant->type)
+  {
+  case J1:
+    SDL_RenderCopy(d->renderer, d->tour1, NULL, &rectTour);
+    break;
+  
+  case J2:
+    SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour);
+    break;
+
+  case VIDE:
+    break;
+  }
 
   SDL_RenderPresent(d->renderer);
   SDL_Delay(300);
@@ -282,6 +299,8 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
     }
   }
 
+  SDL_Rect rectTour = {WIDTH-270, HEIGHT-850, 200, 200};
+  SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour);
   SDL_RenderPresent(d->renderer);
 }
 
@@ -332,32 +351,52 @@ static bool endAffichage(void *data, Puissance4 *game) {
   SDL_Texture *rejouerT = NULL;
   SDL_Rect rect = {WIDTH - 300, HEIGHT - 500, 250, 100};
 
+
+
+  SDL_Surface *blanc = SDL_LoadBMP("img/blanc.bmp");
+  if (!blanc) {
+    fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+    return false;
+  }
+
+  SDL_Texture *blancT = SDL_CreateTextureFromSurface(d->renderer, blanc);
+  SDL_FreeSurface(blanc);
+  if (!blancT) {
+    fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
+    return false;
+  }
+
+  SDL_Rect rectTour = {WIDTH-270, HEIGHT-850, 200, 200};
+  SDL_RenderCopy(d->renderer, blancT, NULL, &rectTour);
+
   if (!game->courant) {
     egalite = SDL_LoadBMP("img/egalite.bmp");
     if (!egalite) {
       fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
       return false;
     }
     egaliteT = SDL_CreateTextureFromSurface(d->renderer, egalite);
+    SDL_FreeSurface(egalite);
     if (!egaliteT) {
       fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
-      SDL_FreeSurface(egalite);
+      SDL_DestroyTexture(blancT);
       return false;
     }
 
     rejouer = SDL_LoadBMP("img/rejouer.bmp");
     if (!rejouer) {
       fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
-      SDL_FreeSurface(egalite);
       SDL_DestroyTexture(egaliteT);
+      SDL_DestroyTexture(blancT);
       return false;
     }
     rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
+    SDL_FreeSurface(rejouer);
     if (!rejouerT) {
       fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
-      SDL_FreeSurface(rejouer);
-      SDL_FreeSurface(egalite);
       SDL_DestroyTexture(egaliteT);
+      SDL_DestroyTexture(blancT);
       return false;
     }
 
@@ -366,50 +405,45 @@ static bool endAffichage(void *data, Puissance4 *game) {
 
     SDL_RenderCopy(d->renderer, egaliteT, NULL, &rect);
     SDL_RenderPresent(d->renderer);
-    // SDL_FreeSurface(surfaceMessage);
-    // SDL_DestroyTexture(Message);
   } else {
     if (game->courant->type == J1) {
       gagne = SDL_LoadBMP("img/gagnerouge.bmp");
-      if (!gagne) {
-        fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
-        return false;
-      }
-      gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
-      if (!gagneT) {
-        fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
-        SDL_FreeSurface(gagne);
-        return false;
-      }
-      SDL_RenderCopy(d->renderer, gagneT, NULL, &rect);
     } else {
       gagne = SDL_LoadBMP("img/gagnejaune.bmp");
-      if (!gagne) {
-        printf("Erreur de chargement de l'image : %s", SDL_GetError());
-        return -1;
-      }
-      gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
-      if (!gagneT) {
-        printf("Erreur de chargement de la surface : %s", SDL_GetError());
-        SDL_FreeSurface(gagne);
-        return -1;
-      }
-      SDL_RenderCopy(d->renderer, gagneT, NULL, &rect);
     }
+
+    if (!gagne) {
+      printf("Erreur de chargement de l'image : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
+      return false;
+    }
+
+    gagneT = SDL_CreateTextureFromSurface(d->renderer, gagne);
+    SDL_FreeSurface(gagne);
+    if (!gagneT) {
+      printf("Erreur de chargement de la surface : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
+      return false;
+    }
+
+    SDL_RenderCopy(d->renderer, gagneT, NULL, &rect);
+
+
+
 
     rejouer = SDL_LoadBMP("img/rejouer.bmp");
     if (!rejouer) {
       fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
-      SDL_FreeSurface(gagne);
       SDL_DestroyTexture(gagneT);
+      SDL_DestroyTexture(blancT);
       return false;
     }
     rejouerT = SDL_CreateTextureFromSurface(d->renderer, rejouer);
+    SDL_FreeSurface(rejouer);
     if (!rejouerT) {
       fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
-      SDL_FreeSurface(gagne);
       SDL_DestroyTexture(gagneT);
-      SDL_FreeSurface(rejouer);
+      SDL_DestroyTexture(blancT);
       return false;
     }
 
@@ -417,29 +451,26 @@ static bool endAffichage(void *data, Puissance4 *game) {
     SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2);
     SDL_RenderPresent(d->renderer);
   }
+
   SDL_Event event;
   SDL_bool action = SDL_FALSE;
+
   while (!action) {
     SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT) {
       action = SDL_TRUE;
       if(egalite){
-        SDL_FreeSurface(egalite);
         SDL_DestroyTexture(egaliteT);
-        egalite = NULL;
-        egaliteT = NULL;
       }
       if(gagne){
-        SDL_FreeSurface(gagne);
         SDL_DestroyTexture(gagneT);
-        gagne = NULL;
-        gagneT = NULL;
       }
       if(rejouer){
-        SDL_FreeSurface(rejouer);
         SDL_DestroyTexture(rejouerT);
-        rejouer = NULL;
-        rejouerT = NULL;
+      }
+
+      if(blanc){
+        SDL_DestroyTexture(blancT);
       }
       // Free les surfaces et textures créées au dessus
       return false;
@@ -450,22 +481,17 @@ static bool endAffichage(void *data, Puissance4 *game) {
       if((event.button.x >= WIDTH-300 && event.button.x <= WIDTH-50) && (event.button.y >= HEIGHT-200 && event.button.y <= HEIGHT-100)){
         action = SDL_TRUE;
         if(egalite){
-          SDL_FreeSurface(egalite);
           SDL_DestroyTexture(egaliteT);
-          egalite = NULL;
-          egaliteT = NULL;
         }
         if(gagne){
-          SDL_FreeSurface(gagne);
           SDL_DestroyTexture(gagneT);
-          gagne = NULL;
-          gagneT = NULL;
         }
         if(rejouer){
-          SDL_FreeSurface(rejouer);
           SDL_DestroyTexture(rejouerT);
-          rejouer = NULL;
-          rejouerT = NULL;
+        }
+
+        if(blanc){
+          SDL_DestroyTexture(blancT);
         }
         return true;
       }
@@ -499,17 +525,64 @@ userInterface *makeGraphique() {
   SDLData *d = malloc(sizeof(SDLData));
   if (!d) {
     perror("Problème d'allocation dans makeGraphique.");
-    free(ui);
     destroySDL(window, renderer, NULL);
+    free(ui);
     return NULL;
   }
 
   d->renderer = renderer;
   d->window = window;
 
+  SDL_Surface *tour1 = SDL_LoadBMP("img/jaune.bmp");
+  if (!tour1) {
+    fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+    destroySDL(window, renderer, NULL);
+    free(ui);
+    free(d);
+    return NULL;
+  }
+
+  SDL_Texture *tour1T = SDL_CreateTextureFromSurface(renderer, tour1);
+  SDL_FreeSurface(tour1);
+  if (!tour1T) {
+    fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
+    destroySDL(window, renderer, NULL);
+    free(ui);
+    free(d);
+    return NULL;
+  }
+
+  SDL_Surface *tour2 = SDL_LoadBMP("img/rouge.bmp");
+  if (!tour2) {
+    fprintf(stderr, "Erreur de chargement de la surface : %s", SDL_GetError());
+    SDL_DestroyTexture(tour1T);
+    destroySDL(window, renderer, NULL);
+    free(ui);
+    free(d);
+    return NULL;
+  }
+
+  SDL_Texture *tour2T = SDL_CreateTextureFromSurface(renderer, tour2);
+  SDL_FreeSurface(tour2);
+  if (!tour2T) {
+    fprintf(stderr, "Erreur de chargement de la texture : %s", SDL_GetError());
+    SDL_DestroyTexture(tour1T);
+    destroySDL(window, renderer, NULL);
+    free(ui);
+    free(d);
+    return NULL;
+  }
+  
+
+
+  d->tour1 = tour1T;
+  d->tour2 = tour2T;
+
   if (0 != creer_tab_textures(d, renderer)) {
     free(ui);
     free(d);
+    SDL_DestroyTexture(tour1T);
+    SDL_DestroyTexture(tour2T);
     destroySDL(window, renderer, NULL);
     return NULL;
   }
