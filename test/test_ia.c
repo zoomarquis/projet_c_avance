@@ -9,22 +9,6 @@
 extern Puissance4 *jeu;
 extern userInterface *ui;
 
-int initSuite(void) {
-  jeu = initPuissance4();
-  if (!jeu)
-    return CUE_NOMEMORY;
-  jeu->j1 = malloc(sizeof(Joueur));
-  if (!jeu->j1)
-    return CUE_NOMEMORY;
-  jeu->j1->type = J1;
-  jeu->j2 = malloc(sizeof(Joueur));
-  if (!jeu->j2)
-    return CUE_NOMEMORY;
-  jeu->j2->type = J2;
-  initGame(jeu);
-  return CUE_SUCCESS;
-}
-
 /*
 plateau 1:
   1   2   3   4   5   6   7
