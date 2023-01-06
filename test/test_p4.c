@@ -248,19 +248,38 @@ plateau 4 : gagner avec plateau plein
  */
 void test_egalite(void) {
   // plateau 1
-  for (int i = 0; i < NB_LIGNE; i++) {
-    for (int j = 0; j < NB_COLONNE; j++) {
-      jeu->plateau[i][j] = J1; // X
-    }
-  }
-  jeu->plateau[0][0] = jeu->plateau[0][1] = jeu->plateau[0][3] =
-      jeu->plateau[0][4] = J2; // O
-  jeu->plateau[1][0] = jeu->plateau[1][2] = jeu->plateau[1][4] =
-      jeu->plateau[1][5] = J2; // O
-  jeu->plateau[2][0] = jeu->plateau[2][2] = jeu->plateau[2][4] =
-      jeu->plateau[2][6] = J2; // O
+  modifJeton(jeu, 0, 0, J2);
+  modifJeton(jeu, 0, 1, J2);
+  modifJeton(jeu, 0, 2, J1);
+  modifJeton(jeu, 0, 3, J2);
+  modifJeton(jeu, 0, 4, J2);
+  modifJeton(jeu, 0, 5, J1);
+  modifJeton(jeu, 0, 6, J1);
+
+  modifJeton(jeu, 1, 0, J2);
+  modifJeton(jeu, 1, 1, J1);
+  modifJeton(jeu, 1, 2, J2);
+  modifJeton(jeu, 1, 3, J1);
+  modifJeton(jeu, 1, 4, J2);
+  modifJeton(jeu, 1, 5, J2);
+  modifJeton(jeu, 1, 6, J1);
+
+  modifJeton(jeu, 2, 0, J2);
+  modifJeton(jeu, 2, 1, J1);
+  modifJeton(jeu, 2, 2, J2);
+  modifJeton(jeu, 2, 3, J1);
+  modifJeton(jeu, 2, 4, J2);
+  modifJeton(jeu, 2, 5, J1);
+  modifJeton(jeu, 2, 6, J2);
+
   for (int i = 3; i < 6; i++) {
-    jeu->plateau[i][1] = jeu->plateau[i][3] = jeu->plateau[i][5] = J2; // O
+    modifJeton(jeu, i, 0, J1);
+    modifJeton(jeu, i, 1, J2);
+    modifJeton(jeu, i, 2, J1);
+    modifJeton(jeu, i, 3, J2);
+    modifJeton(jeu, i, 4, J1);
+    modifJeton(jeu, i, 5, J2);
+    modifJeton(jeu, i, 6, J1);
   }
 
   for (int j = 0; j < NB_COLONNE; j++) {
@@ -280,17 +299,22 @@ void test_egalite(void) {
 void test_gagner1Alignement(void) {
   initGame(jeu);
   // plateau 2
-  jeu->plateau[2][5] = J1; // X
+  modifJeton(jeu, 2, 5, J1);
 
-  jeu->plateau[3][3] = J2; // O
-  jeu->plateau[3][4] = jeu->plateau[3][5] = J1;
+  modifJeton(jeu, 3, 4, J1);
+  modifJeton(jeu, 3, 5, J1);
+  modifJeton(jeu, 3, 3, J2);
 
-  jeu->plateau[4][5] = J2;
-  jeu->plateau[4][3] = jeu->plateau[4][4] = J1;
+  modifJeton(jeu, 4, 3, J1);
+  modifJeton(jeu, 4, 4, J1);
+  modifJeton(jeu, 4, 5, J2);
 
-  jeu->plateau[5][1] = jeu->plateau[5][3] = jeu->plateau[5][4] =
-      jeu->plateau[5][6] = J2;
-  jeu->plateau[5][2] = jeu->plateau[5][5] = J1;
+  modifJeton(jeu, 5, 2, J1);
+  modifJeton(jeu, 5, 5, J1);
+  modifJeton(jeu, 5, 1, J2);
+  modifJeton(jeu, 5, 3, J2);
+  modifJeton(jeu, 5, 4, J2);
+  modifJeton(jeu, 5, 6, J2);
 
   // test de testColonne
   CU_ASSERT_EQUAL(testColonne(jeu->plateau, 0), 5);
@@ -314,17 +338,25 @@ void test_gagner1Alignement(void) {
 void test_gagner2Alignements(void) {
   initGame(jeu);
   // plateau 3
-  jeu->plateau[2][3] = J2; // O
 
-  jeu->plateau[3][3] = jeu->plateau[3][4] = J2; // O
-  jeu->plateau[3][5] = J1;                      // X
+  modifJeton(jeu, 2, 3, J2);
 
-  jeu->plateau[4][3] = jeu->plateau[4][5] = J2; // O
-  jeu->plateau[4][4] = J1;
+  modifJeton(jeu, 3, 5, J1);
+  modifJeton(jeu, 3, 4, J2);
+  modifJeton(jeu, 3, 3, J2);
 
-  jeu->plateau[5][3] = jeu->plateau[5][6] = J2;
-  jeu->plateau[5][0] = jeu->plateau[5][1] = jeu->plateau[5][2] =
-      jeu->plateau[5][4] = jeu->plateau[5][5] = J1;
+  modifJeton(jeu, 4, 3, J2);
+  modifJeton(jeu, 4, 4, J1);
+  modifJeton(jeu, 4, 5, J2);
+
+  modifJeton(jeu, 5, 0, J1);
+  modifJeton(jeu, 5, 1, J1);
+  modifJeton(jeu, 5, 2, J1);
+  modifJeton(jeu, 5, 4, J1);
+  modifJeton(jeu, 5, 5, J1);
+
+  modifJeton(jeu, 5, 3, J2);
+  modifJeton(jeu, 5, 6, J2);
 
   // test de testColonne
   CU_ASSERT_EQUAL(testColonne(jeu->plateau, 0), 4);
@@ -334,6 +366,11 @@ void test_gagner2Alignements(void) {
   CU_ASSERT_EQUAL(testColonne(jeu->plateau, 4), 2);
   CU_ASSERT_EQUAL(testColonne(jeu->plateau, 5), 2);
   CU_ASSERT_EQUAL(testColonne(jeu->plateau, 6), 4);
+
+  CU_ASSERT_TRUE(testAlign(jeu->plateau, 2, 3, 1, 0));
+  CU_ASSERT_TRUE(testAlign(jeu->plateau, 2, 3, 1, 1));
+  CU_ASSERT_FALSE(testAlign(jeu->plateau, 2, 3, 0, 1));
+  CU_ASSERT_FALSE(testAlign(jeu->plateau, 2, 3, -1, 1));
 
   // dernière pièce posée en colonne 3
   CU_ASSERT_TRUE(testEnd(jeu, 2, 3));
@@ -348,18 +385,39 @@ void test_gagner2Alignements(void) {
 void test_gagnerPlateauPlein(void) {
   initGame(jeu);
   // plateau 4
-  for (int i = 0; i < NB_LIGNE; i++) {
-    for (int j = 0; j < NB_COLONNE; j++) {
-      jeu->plateau[i][j] = J1; // X
-    }
-  }
-  jeu->plateau[0][0] = jeu->plateau[0][3] = jeu->plateau[0][4] = J2; // O
-  jeu->plateau[1][0] = jeu->plateau[1][1] = jeu->plateau[1][2] =
-      jeu->plateau[1][4] = jeu->plateau[1][5] = J2; // O
-  jeu->plateau[2][0] = jeu->plateau[2][2] = jeu->plateau[2][4] =
-      jeu->plateau[2][6] = J2; // O
+
+  modifJeton(jeu, 0, 0, J2);
+  modifJeton(jeu, 0, 1, J1);
+  modifJeton(jeu, 0, 2, J1);
+  modifJeton(jeu, 0, 3, J2);
+  modifJeton(jeu, 0, 4, J2);
+  modifJeton(jeu, 0, 5, J1);
+  modifJeton(jeu, 0, 6, J1);
+
+  modifJeton(jeu, 1, 0, J2);
+  modifJeton(jeu, 1, 1, J2);
+  modifJeton(jeu, 1, 2, J2);
+  modifJeton(jeu, 1, 3, J1);
+  modifJeton(jeu, 1, 4, J2);
+  modifJeton(jeu, 1, 5, J2);
+  modifJeton(jeu, 1, 6, J1);
+
+  modifJeton(jeu, 2, 0, J2);
+  modifJeton(jeu, 2, 1, J1);
+  modifJeton(jeu, 2, 2, J2);
+  modifJeton(jeu, 2, 3, J1);
+  modifJeton(jeu, 2, 4, J2);
+  modifJeton(jeu, 2, 5, J1);
+  modifJeton(jeu, 2, 6, J2);
+
   for (int i = 3; i < 6; i++) {
-    jeu->plateau[i][1] = jeu->plateau[i][3] = jeu->plateau[i][5] = J2; // O
+    modifJeton(jeu, i, 0, J1);
+    modifJeton(jeu, i, 1, J2);
+    modifJeton(jeu, i, 2, J1);
+    modifJeton(jeu, i, 3, J2);
+    modifJeton(jeu, i, 4, J1);
+    modifJeton(jeu, i, 5, J2);
+    modifJeton(jeu, i, 6, J1);
   }
 
   for (int j = 0; j < NB_COLONNE; j++) {
@@ -370,8 +428,6 @@ void test_gagnerPlateauPlein(void) {
   CU_ASSERT_TRUE(testEnd(jeu, 0, 0));
   CU_ASSERT_PTR_NOT_NULL(jeu->courant);
 }
-
-// rajouter des tests sur les alignements dans array fin (les 4 fc)
 
 static CU_TestInfo test_array_Fin[] = {
     {"vérifie toutes les priorités liées à une partie à égalité", test_egalite},
