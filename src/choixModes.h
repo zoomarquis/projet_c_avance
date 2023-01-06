@@ -4,7 +4,7 @@
  * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
  * @brief Définition des fonctions de dialogue par la console pour choisir le
  * mode de jeu.
- * @version 1.0
+ * @version 0.1
  * @date 2022-12-27
  *
  * @copyright Copyright (c) 2022

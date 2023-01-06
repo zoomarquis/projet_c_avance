@@ -5,7 +5,7 @@
  * @brief Ensemble des fonctions utiles à l'IA : création, play (jouer le
  * prochain coup) et toutes les fonctions nécessaires au calcul du prochain
  * coup.
- * @version 1.0
+ * @version 0.1
  * @date 2022-12-27
  *
  * @copyright Copyright (c) 2022

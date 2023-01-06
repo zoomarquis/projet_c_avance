@@ -4,7 +4,7 @@
  * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
  * @brief Ensemble de fonctions pour le mode d'interface console du jeu : créer,
  * afficher, récupérer l'action
- * @version 1.0
+ * @version 0.1
  * @date 2022-12-27
  *
  * @copyright Copyright (c) 2022
