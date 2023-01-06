@@ -99,6 +99,15 @@ static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
  */
 static void destroyData(void *data) {
   SDLData *d = (SDLData *)data;
+  if(d->tour1){
+    SDL_DestroyTexture(d->tour1);
+  }
+
+  if(d->tour2){
+    SDL_DestroyTexture(d->tour2);
+  }
+
+
   destroySDL(d->window, d->renderer, (d->tab_texture));
   free(d);
 }
