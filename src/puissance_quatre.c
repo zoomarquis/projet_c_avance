@@ -224,8 +224,10 @@ Puissance4 *initPuissance4() {
  * @param ui l'interface graphique
  */
 void clean(Puissance4 *game, userInterface *ui) {
-  free(game->j1);
-  free(game->j2);
+  if (game) {
+    free(game->j1);
+    free(game->j2);
+  }
   if (ui)
     ui->destroy(ui->data);
   free(ui);
