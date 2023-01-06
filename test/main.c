@@ -14,9 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include "test_p4.h"
 #include "test_ia.h"
-#include "test_zoe.h"
+#include "test_p4.h"
 
 /**
  * @brief Fonction princiale pour lancer les tests unitaires.
@@ -28,7 +27,7 @@ int main() {
     return CU_get_error();
 
   CU_ErrorCode error =
-      CU_register_nsuites(2, getTestZoeSuites(), getTestIASuites());
+      CU_register_nsuites(2, getTestP4Suites(), getTestIASuites());
 
   if (error != CUE_SUCCESS) {
     fprintf(stderr, "Problème: %s\n", CU_get_error_msg());

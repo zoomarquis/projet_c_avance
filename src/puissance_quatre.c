@@ -132,7 +132,7 @@ int testColonne(Plateau plateau, unsigned c) {
  *
  * @param game le jeu
  */
-void changerJoueur(Puissance4 *game) {
+static void changerJoueur(Puissance4 *game) {
   assert(game);
   assert(game->courant);
   if (game->courant == game->j2)

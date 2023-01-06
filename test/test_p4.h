@@ -1,5 +1,5 @@
 /**
- * @file test_zoe.h
+ * @file test_p4.h
  * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
  * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
  * @brief Définition des fonctions de tests unitaires du fichier
@@ -11,14 +11,14 @@
  *
  */
 
-#ifndef TEST_ZOE_H
+#ifndef TEST_P4_H
 /**
- * @def TEST_ZOE_H
+ * @def TEST_P4_H
  * @brief la garde
  */
-#define TEST_ZOE_H
+#define TEST_P4_H
 #include <CUnit/Basic.h>
-CU_SuiteInfo *getTestZoeSuites();
+CU_SuiteInfo *getTestP4Suites();
 int initSuite();
 int cleanSuite();
 #endif
