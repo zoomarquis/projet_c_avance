@@ -118,6 +118,7 @@ bool testAlign(Plateau, unsigned, unsigned, int, int);
 bool testEnd(Puissance4 *, unsigned, unsigned);
 void modifJeton(Puissance4 *, unsigned, unsigned, Type);
 int testColonne(Plateau, unsigned);
+void changerJoueur(Puissance4 *game);
 void initGame(Puissance4 *);
 void prochainCoup(Puissance4 *);
 void launchGame(Puissance4 *, userInterface *);
