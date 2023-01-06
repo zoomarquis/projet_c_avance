@@ -15,15 +15,15 @@
 
 #include "../src/ia.h"
 #include "test_ia.h"
-#include "test_zoe.h"
+#include "test_p4.h"
 
 /**
- * @brief Un pointeur sur le jeu (extern : celui dans test_zoe.c)
+ * @brief Un pointeur sur le jeu (extern : celui dans test_p4.c)
  *
  */
 extern Puissance4 *jeu;
 /**
- * @brief Un pointeur sur une interface (extern : celui dans test_zoe.c)
+ * @brief Un pointeur sur une interface (extern : celui dans test_p4.c)
  *
  */
 extern userInterface *ui;
