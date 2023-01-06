@@ -1,3 +1,15 @@
+/**
+ * @file main.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Le fichier main des tests unitaires.
+ * @version 0.1
+ * @date 2023-01-06
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
+
 #include <CUnit/Basic.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +18,11 @@
 #include "test_ia.h"
 #include "test_zoe.h"
 
+/**
+ * @brief Fonction princiale pour lancer les tests unitaires.
+ *
+ * @return int un code d'erreur ou de succès
+ */
 int main() {
   if (CUE_SUCCESS != CU_initialize_registry())
     return CU_get_error();

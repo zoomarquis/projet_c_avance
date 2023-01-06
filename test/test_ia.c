@@ -1,3 +1,14 @@
+/**
+ * @file test_ia.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Tests unitaires du fichier ia.
+ * @version 0.1
+ * @date 2023-01-06
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #include <CUnit/Basic.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +17,15 @@
 #include "test_ia.h"
 #include "test_zoe.h"
 
+/**
+ * @brief Un pointeur sur le jeu (extern : celui dans test_zoe.c)
+ *
+ */
 extern Puissance4 *jeu;
+/**
+ * @brief Un pointeur sur une interface (extern : celui dans test_zoe.c)
+ *
+ */
 extern userInterface *ui;
 
 /*
@@ -45,6 +64,10 @@ plateau 2:
   1   2   3   4   5   6   7
 */
 
+/**
+ * @brief Vérifie que la fonction valeurCase est fonctionnelle.
+ *
+ */
 void test_valeurCase(void) {
   jeu->plateau[5][1] = J1;
   jeu->plateau[5][2] = J2;
@@ -69,6 +92,11 @@ void test_valeurCase(void) {
   CU_ASSERT_EQUAL(valeurCase(*jeu, 5, 6), 0); // X
 }
 
+/**
+ * @brief Vérifie que la fonction autour est fonctionnelle pour un plateau
+ * donné.
+ *
+ */
 void test_autourP1(void) {
   /* plateau 1 :
   J1 : ligne - colonne
@@ -91,6 +119,11 @@ void test_autourP1(void) {
   CU_ASSERT_EQUAL(autour(*jeu, 5, 4), 6);
 }
 
+/**
+ * @brief Vérifie que la fonction scoreJoueur est fonctionnelle pour un plateau
+ * donné.
+ *
+ */
 void test_scoreJoueurP1(void) {
   // plateau 1 : somme des calculs de test_autourP1 : 15 et 16
   jeu->courant = jeu->j1;
@@ -99,6 +132,11 @@ void test_scoreJoueurP1(void) {
   CU_ASSERT_EQUAL(scoreJoueur(*jeu), 16);
 }
 
+/**
+ * @brief Vérifie que la fonction autour est fonctionnelle pour un  autre
+ * plateau donné.
+ *
+ */
 void test_autourP2(void) {
   // plateau 2
   jeu->courant = jeu->j1;
@@ -117,6 +155,11 @@ void test_autourP2(void) {
   CU_ASSERT_EQUAL(autour(*jeu, 5, 5), 5);
 }
 
+/**
+ * @brief Vérifie que la fonction scoreJoueur est fonctionnelle pour un autre
+ * plateau donné.
+ *
+ */
 void test_scoreJoueurP2(void) {
   // plateau 2 : somme des calculs de test_autour21 : 32 et 22
   jeu->courant = jeu->j1;
@@ -125,6 +168,11 @@ void test_scoreJoueurP2(void) {
   CU_ASSERT_EQUAL(scoreJoueur(*jeu), 22);
 }
 
+/**
+ * @brief Vérifie que la fonction evaluation est fonctionnelle pour deux
+ * plateaux donnés.
+ *
+ */
 void test_evaluation(void) {
   // plateau 1 : -1 et 1 (jeu à somme nulle)
   jeu->courant = jeu->j1;
@@ -178,4 +226,9 @@ static CU_SuiteInfo suites[2] = {
     {"suiteScore", initSuite, cleanSuite, NULL, NULL, test_array_IA},
     CU_SUITE_INFO_NULL};
 
+/**
+ * @brief Get the Test IA Suites object
+ *
+ * @return CU_SuiteInfo* un tableau avec une suite de tests
+ */
 CU_SuiteInfo *getTestIASuites() { return suites; }

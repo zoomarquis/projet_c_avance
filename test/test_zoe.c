@@ -1,3 +1,14 @@
+/**
+ * @file test_zoe.c
+ * @author Zoé Marquis (zoe_marquis@ens.univ-artois.fr)
+ * @author Enzo Nulli (enzo_nulli@ens.univ-artois.fr)
+ * @brief Tests unitaires du fichier ia.
+ * @version 0.1
+ * @date 2023-01-06
+ *
+ * @copyright Copyright (c) 2023
+ *
+ */
 #include <CUnit/Basic.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,9 +16,23 @@
 #include "../src/puissance_quatre.h"
 #include "test_zoe.h"
 
+/**
+ * @brief Un pointeur sur un jeu.
+ *
+ */
 Puissance4 *jeu;
+/**
+ * @brief Un pointeur sur une interface.
+ *
+ */
 userInterface *ui;
 
+/**
+ * @brief Initialise la suiteBeginning: crée une structure de jeu et deux
+ * joueurs.
+ *
+ * @return int un code d'erreur ou de succès
+ */
 int initSuiteBeginning(void) {
   jeu = initPuissance4();
   if (!jeu)
@@ -22,6 +47,12 @@ int initSuiteBeginning(void) {
   jeu->j2->type = J2;
   return CUE_SUCCESS;
 }
+/**
+ * @brief Initialise une suite parmi les suites qui ne sont pas suiteBeginning:
+ * crée une structure de jeu et deux joueurs et initialise une partie.
+ *
+ * @return int un code d'erreur ou de succès
+ */
 int initSuite(void) {
   jeu = initPuissance4();
   if (!jeu)
@@ -37,12 +68,22 @@ int initSuite(void) {
   initGame(jeu);
   return CUE_SUCCESS;
 }
+/**
+ * @brief Nettoie une suite : supprime le jeu.
+ *
+ * @return int un code de succès
+ */
 int cleanSuite(void) {
   clean(jeu, ui);
   return CUE_SUCCESS;
 }
 
 // suite Beginning :
+
+/**
+ * @brief Vérifie que la fonction initGame est fonctionnelle.
+ *
+ */
 void test_initGame(void) {
   CU_ASSERT_PTR_NOT_NULL(jeu);
   initGame(jeu);
@@ -57,6 +98,11 @@ void test_initGame(void) {
   CU_ASSERT_EQUAL(jeu->j2->type, J2);
   CU_ASSERT_EQUAL(jeu->courant->type, J2);
 }
+/**
+ * @brief Vérifie que le plateau est vide. (Pour vérifier après d'autres tests
+ * censés nettoyer le plateau)
+ *
+ */
 void test_plateauVide(void) {
   for (int i = 0; i < NB_LIGNE; i++) {
     for (int j = 0; j < NB_COLONNE; j++) {
@@ -64,13 +110,19 @@ void test_plateauVide(void) {
     }
   }
 }
+/**
+ * @brief Vérifie que la fonction testColonne est fonctionnelle en début de
+ * partie.
+ *
+ */
 void test_descendDerniereLigne(void) {
   for (int i = 0; i < NB_COLONNE; i++) {
     CU_ASSERT_EQUAL(testColonne(jeu->plateau, i), NB_LIGNE - 1);
   }
 }
 /**
- * @brief Ajoute puis enlève deux jetons.
+ * @brief Ajoute puis enlève deux jetons et vérifie que testColonne et
+ * modifJeton sont fonctionnelles.
  *
  */
 void test_ajoutEtSuppr2Pions(void) {
@@ -90,6 +142,11 @@ void test_ajoutEtSuppr2Pions(void) {
   CU_ASSERT_EQUAL(jeu->plateau[NB_LIGNE - 1][3], VIDE);
   CU_ASSERT_EQUAL(testColonne(jeu->plateau, 3), NB_LIGNE - 1);
 }
+/**
+ * @brief Vérifie que testAlign et testENdsont fonctionnelles, avec ajout d'un
+ * seul jeton.
+ *
+ */
 void test_alignement1Jeton(void) {
   jeu->plateau[NB_LIGNE - 1][4] = J1;
   CU_ASSERT_FALSE(testAlign(jeu->plateau, NB_LIGNE - 1, 4, 0, 1));
@@ -184,6 +241,11 @@ plateau 4 : gagner avec plateau plein
   1   2   3   4   5   6   7
 */
 
+/**
+ * @brief Vérifie des fonctions du module puissance_quatre lorsqu'une partie se
+ * termine par égalité.
+ *
+ */
 void test_egalite(void) {
   // plateau 1
   for (int i = 0; i < NB_LIGNE; i++) {
@@ -210,6 +272,11 @@ void test_egalite(void) {
   CU_ASSERT_PTR_NULL(jeu->courant);
 }
 
+/**
+ * @brief Vérifie des fonctions du module puissance_quatre lorsqu'une partie se
+ * termine par une victoire via 1 alignement de 4 jetons.
+ *
+ */
 void test_gagner1Alignement(void) {
   initGame(jeu);
   // plateau 2
@@ -239,6 +306,11 @@ void test_gagner1Alignement(void) {
   CU_ASSERT_PTR_NOT_NULL(jeu->courant);
 }
 
+/**
+ * @brief Vérifie des fonctions du module puissance_quatre lorsqu'une partie se
+ * termine par une victoire via 2 alignements de 4 jetons.
+ *
+ */
 void test_gagner2Alignements(void) {
   initGame(jeu);
   // plateau 3
@@ -268,6 +340,11 @@ void test_gagner2Alignements(void) {
   CU_ASSERT_PTR_NOT_NULL(jeu->courant);
 }
 
+/**
+ * @brief Vérifie des fonctions du module puissance_quatre lorsqu'une partie se
+ * termine par une victoire via 1 alignement et le plateau est plein.
+ *
+ */
 void test_gagnerPlateauPlein(void) {
   initGame(jeu);
   // plateau 4
@@ -315,11 +392,16 @@ static CU_TestInfo test_array_Fin[] = {
 // test end à false
 // test align à true
 
-static CU_SuiteInfo suites[2] = {
+static CU_SuiteInfo suites[3] = {
     {"suiteBeginning", initSuiteBeginning, cleanSuite, NULL, NULL,
      test_array_Beginning},
     {"suiteEnd", initSuite, cleanSuite, NULL, NULL, test_array_Fin},
     CU_SUITE_INFO_NULL};
 //{"suiteBasique"}
 
+/**
+ * @brief Get the Test Zoe Suites object
+ *
+ * @return CU_SuiteInfo* un tableau de suites de tests
+ */
 CU_SuiteInfo *getTestZoeSuites() { return suites; }
