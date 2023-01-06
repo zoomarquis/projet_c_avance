@@ -5,9 +5,9 @@ Marquis Zoé & Nulli Enzo.
 
 Pour compiler, vous devez avoir Doxygen et CUnit.
 Puisqu'il est nécessaire que LD_LIBRARY_PATH = ./lib,
-Une fois dans le répertoire du projet, veuillez entrer en ligne de commande : 
-  chmod u+x make.sh
-  source make.sh".
+Une fois dans le répertoire du projet, veuillez entrer en ligne de commande :  
+  chmod u+x make.sh  
+  source make.sh"  
 Le jeu est compilé, la documentation générée et l'exécutable exec se lance automatiquement.
 Vous pouvez maintenant relancer l'exécutable exec à souhait.
 
