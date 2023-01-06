@@ -442,18 +442,11 @@ static CU_TestInfo test_array_Fin[] = {
      test_gagnerPlateauPlein},
     CU_TEST_INFO_NULL};
 
-// suite BASIQUE :
-// static CU_TestInfo test_array_Basique[] = {CU_TEST_INFO_NULL};
-// changer joueur : j1 à j2 et j2 à j1
-// test end à false
-// test align à true
-
 static CU_SuiteInfo suites[3] = {
     {"suiteBeginning", initSuiteBeginning, cleanSuite, NULL, NULL,
      test_array_Beginning},
     {"suiteEnd", initSuite, cleanSuite, NULL, NULL, test_array_Fin},
     CU_SUITE_INFO_NULL};
-//{"suiteBasique"}
 
 /**
  * @brief Get the Test P4 Suites object
