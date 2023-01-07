@@ -136,7 +136,6 @@ static int initialise_plateau(SDL_Renderer *renderer) {
  * @brief Permet de creer le tableau de textures
  *
  * @param d Le pointeur sur la data de la SDL (window, renderer, tab_texture)
- * @param renderer Le pointeur sur le renderer
  *
  * @return int 0 si tout s'est bien passé, -1 sinon
  */
@@ -177,7 +176,7 @@ static int creer_tab_textures(SDLData *d) {
  * @param renderer Le pointeur sur le renderer qui va être crée
  * @param w La largeur de la fenêtre
  * @param h La hauteur de la fenêtre
- * @return int 0 si tout s'est bien passé, -1 sinon
+ * @return int 0 si tout s'est bien passé, -1 sinon et -2 si l'initialisation de la SDL s'est mal passée
  */
 static int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h) {
   // Initialisation SDL
@@ -219,9 +218,16 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
   int grid_cell_height = HEIGHT / NB_LIGNE;
   SDL_Color blanc = {255, 255, 255, 255};
   SDL_Color noir = {0, 0, 0, 255};
-  SDL_RenderClear(d->renderer);
-  setRendererColor(d->renderer, blanc);
-  SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a);
+
+  if(0 != SDL_RenderClear(d->renderer)){
+    game->rageQuit = true;
+  }
+  if(0 != setRendererColor(d->renderer, blanc)){
+    game->rageQuit = true;
+  }
+  if(0 != SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a)){
+    game->rageQuit = true;
+  }
   SDL_Rect rect;
   for (int l = 0; l < NB_LIGNE; l++) {
     for (int c = 0; c < NB_COLONNE; c++) {
@@ -229,12 +235,16 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
       rect.y = l * grid_cell_height;
       rect.w = grid_cell_width;
       rect.h = grid_cell_height;
-      SDL_RenderDrawRect(d->renderer, &rect);
+      if(0 != SDL_RenderDrawRect(d->renderer, &rect)){
+        game->rageQuit = true;
+      }
     }
   }
 
   SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
-  SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour);
+  if(0 != SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour)){
+    game->rageQuit = true;
+  }
   SDL_RenderPresent(d->renderer);
 }
 
@@ -315,20 +325,34 @@ static void updateGraphique(void *data, Puissance4 *game) {
                    (game->ligne * grid_cell_height) + 5, grid_cell_width - 10,
                    grid_cell_height - 10};
 
-  SDL_SetRenderTarget(d->renderer, d->tab_texture[game->ligne][game->colonne]);
-  setRendererColor(d->renderer, blanc);
+  if(0 != SDL_SetRenderTarget(d->renderer, d->tab_texture[game->ligne][game->colonne])){
+    game->rageQuit = true;
+  }
+  if(0 != setRendererColor(d->renderer, blanc)){
+    game->rageQuit = true;
+  }
   switch (game->plateau[game->ligne][game->colonne]) {
   case J1:
-    draw_circle(d->renderer, 250, 250, 240, rouge);
-    SDL_SetRenderTarget(d->renderer, NULL);
-    SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne],
-                   NULL, &rect);
+    if(0 != draw_circle(d->renderer, 250, 250, 240, rouge)){
+      game->rageQuit = true;
+    }
+    if(0 != SDL_SetRenderTarget(d->renderer, NULL)){
+      game->rageQuit = true;
+    }
+    if(0 != SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne], NULL, &rect)){
+      game->rageQuit = true;
+    }
     break;
   case J2:
-    draw_circle(d->renderer, 250, 250, 240, jaune);
-    SDL_SetRenderTarget(d->renderer, NULL);
-    SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne],
-                   NULL, &rect);
+    if(0 != draw_circle(d->renderer, 250, 250, 240, jaune)){
+      game->rageQuit = true;
+    }
+    if(0 != SDL_SetRenderTarget(d->renderer, NULL)){
+      game->rageQuit = true;
+    }
+    if(0 != SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne], NULL, &rect)){
+      game->rageQuit = true;
+    }
     break;
   case VIDE:
     break;
@@ -337,11 +361,15 @@ static void updateGraphique(void *data, Puissance4 *game) {
   SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
   switch (game->courant->type) {
   case J1:
-    SDL_RenderCopy(d->renderer, d->tour1, NULL, &rectTour);
+    if(0 != SDL_RenderCopy(d->renderer, d->tour1, NULL, &rectTour)){
+      game->rageQuit = true; 
+    }
     break;
 
   case J2:
-    SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour);
+    if(0 != SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour)){
+      game->rageQuit = true;
+    }
     break;
 
   case VIDE:
@@ -385,7 +413,9 @@ static bool endAffichage(void *data, Puissance4 *game) {
   }
 
   SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
-  SDL_RenderCopy(d->renderer, blancT, NULL, &rectTour);
+  if(0 != SDL_RenderCopy(d->renderer, blancT, NULL, &rectTour)){
+    return false;
+  }
 
   if (!game->courant) {
     egalite = SDL_LoadBMP("img/egalite.bmp");
@@ -423,9 +453,13 @@ static bool endAffichage(void *data, Puissance4 *game) {
     }
 
     SDL_Rect rect2 = {WIDTH - 300, HEIGHT - 200, 250, 100};
-    SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2);
+    if(0 != SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2)){
+      return false;
+    }
 
-    SDL_RenderCopy(d->renderer, egaliteT, NULL, &rect);
+    if(0 != SDL_RenderCopy(d->renderer, egaliteT, NULL, &rect)){
+      return false;
+    }
     SDL_RenderPresent(d->renderer);
   } else {
     if (game->courant->type == J1) {
@@ -469,7 +503,9 @@ static bool endAffichage(void *data, Puissance4 *game) {
     }
 
     SDL_Rect rect2 = {WIDTH - 300, HEIGHT - 200, 250, 100};
-    SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2);
+    if(0 != SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2)){
+      return false;
+    }
     SDL_RenderPresent(d->renderer);
   }
 
@@ -511,7 +547,6 @@ static bool endAffichage(void *data, Puissance4 *game) {
         if (rejouer) {
           SDL_DestroyTexture(rejouerT);
         }
-
         if (blanc) {
           SDL_DestroyTexture(blancT);
         }
