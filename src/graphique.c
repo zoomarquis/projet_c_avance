@@ -221,12 +221,15 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
 
   if(0 != SDL_RenderClear(d->renderer)){
     game->rageQuit = true;
+    return;
   }
   if(0 != setRendererColor(d->renderer, blanc)){
     game->rageQuit = true;
+    return;
   }
   if(0 != SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a)){
     game->rageQuit = true;
+    return;
   }
   SDL_Rect rect;
   for (int l = 0; l < NB_LIGNE; l++) {
@@ -237,6 +240,7 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
       rect.h = grid_cell_height;
       if(0 != SDL_RenderDrawRect(d->renderer, &rect)){
         game->rageQuit = true;
+        return;
       }
     }
   }
@@ -244,6 +248,7 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
   SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
   if(0 != SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour)){
     game->rageQuit = true;
+    return;
   }
   SDL_RenderPresent(d->renderer);
 }
@@ -264,6 +269,7 @@ static unsigned playHumainGraphique(Puissance4 *game) {
   while (!joue) {
     if(0 != SDL_WaitEvent(&event)){
       game->rageQuit = true;
+      return coup;
     }
     if (event.type == SDL_QUIT) {
       game->rageQuit = true;
@@ -329,31 +335,39 @@ static void updateGraphique(void *data, Puissance4 *game) {
 
   if(0 != SDL_SetRenderTarget(d->renderer, d->tab_texture[game->ligne][game->colonne])){
     game->rageQuit = true;
+    return;
   }
   if(0 != setRendererColor(d->renderer, blanc)){
     game->rageQuit = true;
+    return;
   }
   switch (game->plateau[game->ligne][game->colonne]) {
   case J1:
     if(0 != draw_circle(d->renderer, 250, 250, 240, rouge)){
       game->rageQuit = true;
+      return;
     }
     if(0 != SDL_SetRenderTarget(d->renderer, NULL)){
       game->rageQuit = true;
+      return;
     }
     if(0 != SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne], NULL, &rect)){
       game->rageQuit = true;
+      return;
     }
     break;
   case J2:
     if(0 != draw_circle(d->renderer, 250, 250, 240, jaune)){
       game->rageQuit = true;
+      return;
     }
     if(0 != SDL_SetRenderTarget(d->renderer, NULL)){
       game->rageQuit = true;
+      return;
     }
     if(0 != SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne], NULL, &rect)){
       game->rageQuit = true;
+      return;
     }
     break;
   case VIDE:
@@ -364,13 +378,15 @@ static void updateGraphique(void *data, Puissance4 *game) {
   switch (game->courant->type) {
   case J1:
     if(0 != SDL_RenderCopy(d->renderer, d->tour1, NULL, &rectTour)){
-      game->rageQuit = true; 
+      game->rageQuit = true;
+      return;
     }
     break;
 
   case J2:
     if(0 != SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour)){
       game->rageQuit = true;
+      return;
     }
     break;
 
