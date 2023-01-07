@@ -93,6 +93,9 @@ int main() {
     goto Quitter;
 
   launchGame(game, ui);
+  if (game->rageQuit)
+    goto Quitter;
+
   clean(game, ui);
   return EXIT_SUCCESS;
 
