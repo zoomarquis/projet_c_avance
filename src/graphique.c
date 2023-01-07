@@ -242,6 +242,7 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
       rect.w = grid_cell_width;
       rect.h = grid_cell_height;
       if (0 != SDL_RenderDrawRect(d->renderer, &rect)) {
+        fprintf(stderr, "Erreur de SDL_RenderDrawRect : %s", SDL_GetError());
         game->rageQuit = true;
         return;
       }
@@ -720,7 +721,7 @@ Joueur *makeHumainGraphique(Type t) {
   assert(t != VIDE);
   Joueur *j = malloc(sizeof(Joueur));
   if (!j) {
-    perror("Problème d'allocation dans makeHumainConsole.");
+    perror("Problème d'allocation dans makeHumainGraphique.");
     return NULL;
   }
   j->type = t;
