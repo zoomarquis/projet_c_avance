@@ -115,35 +115,6 @@ static void destroyData(void *data) {
 }
 
 /**
- * @brief Permet au joueur humain en mode graphique de jouer un pion.
- *
- * @param game le jeu
- * @return unsigned la colonne où le joueur place un pion
- */
-static unsigned playHumainGraphique(Puissance4 *game) {
-  int coup = 0;
-  int grid_cell_width = (WIDTH / NB_COLONNE) - PAS;
-  int width_plateau = (grid_cell_width * NB_COLONNE);
-  assert(game->courant);
-  SDL_Event event;
-  SDL_bool joue = SDL_FALSE;
-  while (!joue) {
-    SDL_WaitEvent(&event);
-    if (event.type == SDL_QUIT) {
-      game->rageQuit = true;
-      return coup;
-    }
-    if (event.type == SDL_MOUSEBUTTONUP && event.button.x < width_plateau) {
-      coup = (event.button.x) / (grid_cell_width);
-      if (testColonne(game->plateau, coup) != -1) {
-        joue = SDL_TRUE;
-      }
-    }
-  }
-  return coup;
-}
-
-/**
  * @brief Permet de mettre la fenetre en blanc
  *
  * @param renderer Pointeur sur le renderer
@@ -156,6 +127,45 @@ static int initialise_plateau(SDL_Renderer *renderer) {
   if (setRendererColor(renderer, blanc) != 0) {
     fprintf(stderr, "Erreur setRendererColor : %s", SDL_GetError());
     return -1;
+  }
+  return 0;
+}
+
+
+/**
+ * @brief Permet de creer le tableau de textures
+ *
+ * @param d Le pointeur sur la data de la SDL (window, renderer, tab_texture)
+ * @param renderer Le pointeur sur le renderer
+ *
+ * @return int 0 si tout s'est bien passé, -1 sinon
+ */
+static int creer_tab_textures(SDLData *d) {
+  int tmp = 0;
+  for (int i = 0; i < NB_LIGNE; i++) {
+    for (int j = 0; j < NB_COLONNE; j++) {
+      d->tab_texture[i][j] =
+          SDL_CreateTexture(d->renderer, SDL_PIXELFORMAT_RGBA8888,
+                            SDL_TEXTUREACCESS_TARGET, 500, 500);
+      if (NULL == d->tab_texture[i][j]) {
+        fprintf(stderr, "Erreur SDL_CreateTexture : %s", SDL_GetError());
+        tmp = j;
+        for (int k = 0; k <= i; k++) {
+          if(k != i){
+            j = NB_COLONNE;
+          }else{
+            j = tmp;
+          }
+          for (int l = 0; l < j; l++) {
+            if(d->tab_texture[k][l] != NULL){
+              SDL_DestroyTexture(d->tab_texture[k][l]);
+              d->tab_texture[k][l] = NULL;
+            }
+          }
+        }
+        return -1;
+      }
+    }
   }
   return 0;
 }
@@ -195,6 +205,66 @@ static int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h) {
     return -1;
   }
   return 0;
+}
+/**
+ * @brief Permet de faire le quadrillage 6x7 de la fenêtre
+ *
+ * @param data Le pointeur sur la data de la SDL (window, renderer, tab_texture)
+ * @param game Le pointeur sur le jeu
+ */
+static void initPlateauGraphique(void *data, Puissance4 *game) {
+  // afficher le plateau
+  SDLData *d = (SDLData *)data;
+  int grid_cell_width = (WIDTH / NB_COLONNE) - PAS;
+  int grid_cell_height = HEIGHT / NB_LIGNE;
+  SDL_Color blanc = {255, 255, 255, 255};
+  SDL_Color noir = {0, 0, 0, 255};
+  SDL_RenderClear(d->renderer);
+  setRendererColor(d->renderer, blanc);
+  SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a);
+  SDL_Rect rect;
+  for (int l = 0; l < NB_LIGNE; l++) {
+    for (int c = 0; c < NB_COLONNE; c++) {
+      rect.x = c * grid_cell_width;
+      rect.y = l * grid_cell_height;
+      rect.w = grid_cell_width;
+      rect.h = grid_cell_height;
+      SDL_RenderDrawRect(d->renderer, &rect);
+    }
+  }
+
+  SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
+  SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour);
+  SDL_RenderPresent(d->renderer);
+}
+
+/**
+ * @brief Permet au joueur humain en mode graphique de jouer un pion.
+ *
+ * @param game le jeu
+ * @return unsigned la colonne où le joueur place un pion
+ */
+static unsigned playHumainGraphique(Puissance4 *game) {
+  int coup = 0;
+  int grid_cell_width = (WIDTH / NB_COLONNE) - PAS;
+  int width_plateau = (grid_cell_width * NB_COLONNE);
+  assert(game->courant);
+  SDL_Event event;
+  SDL_bool joue = SDL_FALSE;
+  while (!joue) {
+    SDL_WaitEvent(&event);
+    if (event.type == SDL_QUIT) {
+      game->rageQuit = true;
+      return coup;
+    }
+    if (event.type == SDL_MOUSEBUTTONUP && event.button.x < width_plateau) {
+      coup = (event.button.x) / (grid_cell_width);
+      if (testColonne(game->plateau, coup) != -1) {
+        joue = SDL_TRUE;
+      }
+    }
+  }
+  return coup;
 }
 
 /**
@@ -280,67 +350,6 @@ static void updateGraphique(void *data, Puissance4 *game) {
 
   SDL_RenderPresent(d->renderer);
   SDL_Delay(100);
-}
-
-/**
- * @brief Permet de faire le quadrillage 6x7 de la fenêtre
- *
- * @param data Le pointeur sur la data de la SDL (window, renderer, tab_texture)
- * @param game Le pointeur sur le jeu
- */
-static void initPlateauGraphique(void *data, Puissance4 *game) {
-  // afficher le plateau
-  SDLData *d = (SDLData *)data;
-  int grid_cell_width = (WIDTH / NB_COLONNE) - PAS;
-  int grid_cell_height = HEIGHT / NB_LIGNE;
-  SDL_Color blanc = {255, 255, 255, 255};
-  SDL_Color noir = {0, 0, 0, 255};
-  SDL_RenderClear(d->renderer);
-  setRendererColor(d->renderer, blanc);
-  SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a);
-  SDL_Rect rect;
-  for (int l = 0; l < NB_LIGNE; l++) {
-    for (int c = 0; c < NB_COLONNE; c++) {
-      rect.x = c * grid_cell_width;
-      rect.y = l * grid_cell_height;
-      rect.w = grid_cell_width;
-      rect.h = grid_cell_height;
-      SDL_RenderDrawRect(d->renderer, &rect);
-    }
-  }
-
-  SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
-  SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour);
-  SDL_RenderPresent(d->renderer);
-}
-
-/**
- * @brief Permet de creer le tableau de textures
- *
- * @param d Le pointeur sur la data de la SDL (window, renderer, tab_texture)
- * @param renderer Le pointeur sur le renderer
- *
- * @return int 0 si tout s'est bien passé, -1 sinon
- */
-static int creer_tab_textures(SDLData *d, SDL_Renderer *renderer) {
-  for (int i = 0; i < NB_LIGNE; i++) {
-    for (int j = 0; j < NB_COLONNE; j++) {
-      d->tab_texture[i][j] =
-          SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,
-                            SDL_TEXTUREACCESS_TARGET, 500, 500);
-      if (NULL == d->tab_texture[i][j]) {
-        fprintf(stderr, "Erreur SDL_CreateTexture : %s", SDL_GetError());
-        for (int k = 0; k <= i; k++) {
-          for (int l = 0; l < j; l++) {
-            SDL_DestroyTexture(d->tab_texture[k][l]);
-            d->tab_texture[i][j] = NULL;
-          }
-        }
-        return -1;
-      }
-    }
-  }
-  return 0;
 }
 
 /**
@@ -593,7 +602,7 @@ userInterface *makeGraphique() {
   d->tour1 = tour1T;
   d->tour2 = tour2T;
 
-  if (0 != creer_tab_textures(d, renderer)) {
+  if (0 != creer_tab_textures(d)) {
     free(ui);
     free(d);
     SDL_DestroyTexture(tour1T);
