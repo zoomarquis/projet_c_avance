@@ -267,10 +267,7 @@ static unsigned playHumainGraphique(Puissance4 *game) {
   SDL_Event event;
   SDL_bool joue = SDL_FALSE;
   while (!joue) {
-    if(0 != SDL_WaitEvent(&event)){
-      game->rageQuit = true;
-      return coup;
-    }
+    SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT) {
       game->rageQuit = true;
       return coup;
@@ -531,9 +528,7 @@ static bool endAffichage(void *data, Puissance4 *game) {
   SDL_bool action = SDL_FALSE;
 
   while (!action) {
-    if(0 != SDL_WaitEvent(&event)){
-      return false;
-    }
+    SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT) {
       action = SDL_TRUE;
       if (egalite) {
