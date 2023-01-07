@@ -99,17 +99,19 @@ static void destroySDL(SDL_Window *window, SDL_Renderer *renderer,
  */
 static void destroyData(void *data) {
   SDLData *d = (SDLData *)data;
-  if(d->tour1){
-    SDL_DestroyTexture(d->tour1);
-  }
+  if(d){
+    if(d->tour1 != NULL){
+      SDL_DestroyTexture(d->tour1);
+    }
 
-  if(d->tour2){
-    SDL_DestroyTexture(d->tour2);
-  }
+    if(d->tour2 != NULL){
+      SDL_DestroyTexture(d->tour2);
+    }
 
+    destroySDL(d->window, d->renderer, (d->tab_texture));
+    free(d);
 
-  destroySDL(d->window, d->renderer, (d->tab_texture));
-  free(d);
+    }
 }
 
 /**
@@ -277,7 +279,7 @@ static void updateGraphique(void *data, Puissance4 *game) {
   }
 
   SDL_RenderPresent(d->renderer);
-  SDL_Delay(300);
+  SDL_Delay(100);
 }
 
 /**
