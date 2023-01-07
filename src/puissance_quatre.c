@@ -189,6 +189,8 @@ void launchGame(Puissance4 *game, userInterface *ui) {
 jouer:
   initGame(game);
   ui->initAffichage(ui->data, game);
+  if (game->rageQuit)
+    return;
   do {
     changerJoueur(game);
     ui->getProchainCoup(game);
@@ -196,6 +198,8 @@ jouer:
       return;
     modifJeton(game, game->ligne, game->colonne, game->courant->type);
     ui->affichage(ui->data, game);
+    if (game->rageQuit)
+      return;
   } while (!(testEnd(game, game->ligne, game->colonne)));
   rejouer = ui->endAffichage(ui->data, game);
   if (rejouer)
