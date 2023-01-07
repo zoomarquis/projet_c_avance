@@ -173,7 +173,7 @@ static int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h) {
   // Initialisation SDL
   if (0 != SDL_Init(SDL_INIT_VIDEO)) {
     fprintf(stderr, "Erreur SDL_Init : %s", SDL_GetError());
-    return -1;
+    return -2;
   }
 
   // Initialisation Fenetre
@@ -529,9 +529,13 @@ userInterface *makeGraphique() {
     return NULL;
   }
 
-  if (0 != init(&window, &renderer, WIDTH, HEIGHT)) {
+  int status = init(&window, &renderer, WIDTH, HEIGHT);
+
+  if (status != 0) {
     free(ui);
-    destroySDL(window, renderer, NULL);
+    if(status != -2){
+      destroySDL(window, renderer, NULL);
+    }
     return NULL;
   }
 
