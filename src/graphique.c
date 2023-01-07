@@ -220,14 +220,17 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
   SDL_Color noir = {0, 0, 0, 255};
 
   if(0 != SDL_RenderClear(d->renderer)){
+    fprintf(stderr, "Erreur de SDL_RenderClear : %s", SDL_GetError());
     game->rageQuit = true;
     return;
   }
   if(0 != setRendererColor(d->renderer, blanc)){
+    fprintf(stderr, "Erreur de setRendererColor : %s", SDL_GetError());
     game->rageQuit = true;
     return;
   }
   if(0 != SDL_SetRenderDrawColor(d->renderer, noir.r, noir.g, noir.b, noir.a)){
+    fprintf(stderr, "Erreur de SDL_SetRenderDrawColor : %s", SDL_GetError());
     game->rageQuit = true;
     return;
   }
@@ -247,6 +250,7 @@ static void initPlateauGraphique(void *data, Puissance4 *game) {
 
   SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
   if(0 != SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour)){
+    fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
     game->rageQuit = true;
     return;
   }
@@ -331,24 +335,29 @@ static void updateGraphique(void *data, Puissance4 *game) {
                    grid_cell_height - 10};
 
   if(0 != SDL_SetRenderTarget(d->renderer, d->tab_texture[game->ligne][game->colonne])){
+    fprintf(stderr, "Erreur de SDL_SetRenderTarget : %s", SDL_GetError());
     game->rageQuit = true;
     return;
   }
   if(0 != setRendererColor(d->renderer, blanc)){
+    fprintf(stderr, "Erreur de setRendererColor : %s", SDL_GetError());
     game->rageQuit = true;
     return;
   }
   switch (game->plateau[game->ligne][game->colonne]) {
   case J1:
     if(0 != draw_circle(d->renderer, 250, 250, 240, rouge)){
+      fprintf(stderr, "Erreur de draw_circle : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
     if(0 != SDL_SetRenderTarget(d->renderer, NULL)){
+      fprintf(stderr, "Erreur de SDL_SetRenderTarget : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
     if(0 != SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne], NULL, &rect)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
@@ -359,10 +368,12 @@ static void updateGraphique(void *data, Puissance4 *game) {
       return;
     }
     if(0 != SDL_SetRenderTarget(d->renderer, NULL)){
+      fprintf(stderr, "Erreur de SDL_SetRenderTarget : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
     if(0 != SDL_RenderCopy(d->renderer, d->tab_texture[game->ligne][game->colonne], NULL, &rect)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
@@ -375,6 +386,7 @@ static void updateGraphique(void *data, Puissance4 *game) {
   switch (game->courant->type) {
   case J1:
     if(0 != SDL_RenderCopy(d->renderer, d->tour1, NULL, &rectTour)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
@@ -382,6 +394,7 @@ static void updateGraphique(void *data, Puissance4 *game) {
 
   case J2:
     if(0 != SDL_RenderCopy(d->renderer, d->tour2, NULL, &rectTour)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
       game->rageQuit = true;
       return;
     }
@@ -429,6 +442,8 @@ static bool endAffichage(void *data, Puissance4 *game) {
 
   SDL_Rect rectTour = {WIDTH - 270, HEIGHT - 850, 200, 200};
   if(0 != SDL_RenderCopy(d->renderer, blancT, NULL, &rectTour)){
+    fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
+    SDL_DestroyTexture(blancT);
     return false;
   }
 
@@ -469,10 +484,18 @@ static bool endAffichage(void *data, Puissance4 *game) {
 
     SDL_Rect rect2 = {WIDTH - 300, HEIGHT - 200, 250, 100};
     if(0 != SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
+      SDL_DestroyTexture(egaliteT);
+      SDL_DestroyTexture(rejouerT);
       return false;
     }
 
     if(0 != SDL_RenderCopy(d->renderer, egaliteT, NULL, &rect)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
+      SDL_DestroyTexture(egaliteT);
+      SDL_DestroyTexture(rejouerT);
       return false;
     }
     SDL_RenderPresent(d->renderer);
@@ -497,7 +520,12 @@ static bool endAffichage(void *data, Puissance4 *game) {
       return false;
     }
 
-    SDL_RenderCopy(d->renderer, gagneT, NULL, &rect);
+    if(0 != SDL_RenderCopy(d->renderer, gagneT, NULL, &rect)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
+      SDL_DestroyTexture(gagneT);
+      return false;
+    }
 
     rejouer = SDL_LoadBMP("img/rejouer.bmp");
     if (!rejouer) {
@@ -519,6 +547,10 @@ static bool endAffichage(void *data, Puissance4 *game) {
 
     SDL_Rect rect2 = {WIDTH - 300, HEIGHT - 200, 250, 100};
     if(0 != SDL_RenderCopy(d->renderer, rejouerT, NULL, &rect2)){
+      fprintf(stderr, "Erreur de RenderCopy : %s", SDL_GetError());
+      SDL_DestroyTexture(blancT);
+      SDL_DestroyTexture(gagneT);
+      SDL_DestroyTexture(rejouerT);
       return false;
     }
     SDL_RenderPresent(d->renderer);
