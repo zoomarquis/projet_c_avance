@@ -14,7 +14,7 @@ LDFLAGS = -L./lib -lSDL2 -lcunit
 
 SRC := $(wildcard $(SRC_DIR)/*.c)
 OBJS := $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
-DEPS := $(OBJS : .o = .d )
+DEPS := $(OBJS:.o=.d)
 
 SRC_TEST := $(wildcard $(TEST_DIR)/*.c )
 OBJS_TEST := $(addprefix $(OBJ_DIR)/, $(SRC_TEST:.c=.o))
